@@ -121,7 +121,8 @@ body::before {
 }
 
 
-.status-dot {
+.status-dot,
+.live-dot {
     width: 6px;
     height: 6px;
 
@@ -130,6 +131,8 @@ body::before {
     background: #65ff9a;
 
     box-shadow: 0 0 12px #65ff9a;
+
+    display: inline-block;
 }
 
 
@@ -297,6 +300,19 @@ main {
 }
 
 
+.input-hint {
+    font-family: "JetBrains Mono", monospace;
+
+    color: #484e58;
+
+    font-size: 8px;
+
+    margin-top: 8px;
+
+    text-align: right;
+}
+
+
 /* ==================== QUICK RESULT ==================== */
 
 .quick-result {
@@ -410,6 +426,23 @@ main {
 }
 
 
+.measurement-note {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 14px;
+
+    color: #555c67;
+
+    font-family: "JetBrains Mono", monospace;
+
+    font-size: 8px;
+}
+
+
 /* ==================== NETWORK ==================== */
 
 .network {
@@ -489,11 +522,7 @@ main {
 }
 
 
-.network-node.active {
-    opacity: 1;
-}
-
-
+.network-node.active,
 .network-node.complete {
     opacity: 1;
 }
@@ -588,8 +617,6 @@ main {
     min-width: 55px;
 
     position: relative;
-
-    overflow: visible;
 }
 
 
@@ -630,6 +657,41 @@ main {
         left: calc(100% - 6px);
     }
 
+}
+
+
+.route-disclaimer {
+    border-top: 1px solid #17191e;
+
+    margin-top: 25px;
+
+    padding-top: 14px;
+
+    display: flex;
+
+    gap: 18px;
+}
+
+
+.route-disclaimer span {
+    font-family: "JetBrains Mono", monospace;
+
+    color: #555b65;
+
+    font-size: 8px;
+
+    letter-spacing: 1px;
+}
+
+
+.route-disclaimer p {
+    color: #505761;
+
+    font-family: "JetBrains Mono", monospace;
+
+    font-size: 8px;
+
+    line-height: 1.5;
 }
 
 
@@ -737,7 +799,8 @@ main {
 
 /* ==================== INTELLIGENCE ==================== */
 
-.intelligence {
+.intelligence,
+.location-panel {
     border: 1px solid #1b1d23;
 
     background: #0d0f13;
@@ -748,7 +811,8 @@ main {
 }
 
 
-.panel-heading {
+.panel-heading,
+.location-header {
     display: flex;
 
     align-items: flex-start;
@@ -759,7 +823,8 @@ main {
 }
 
 
-.panel-heading h2 {
+.panel-heading h2,
+.location-header h2 {
     font-size: 18px;
 
     margin-top: 6px;
@@ -829,6 +894,255 @@ main {
     overflow: hidden;
 
     text-overflow: ellipsis;
+}
+
+
+/* ==================== LOCATION ==================== */
+
+.location-content {
+    display: grid;
+
+    grid-template-columns:
+        1.5fr 1fr;
+
+    gap: 12px;
+}
+
+
+.location-map {
+    height: 270px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 50%,
+            rgba(101,255,154,0.06),
+            transparent 45%
+        ),
+        #08090c;
+
+    border: 1px solid #1b1d23;
+}
+
+
+.map-grid {
+    position: absolute;
+
+    inset: 0;
+
+    opacity: 0.6;
+
+    background-image:
+        linear-gradient(
+            rgba(255,255,255,0.04) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,0.04) 1px,
+            transparent 1px
+        );
+
+    background-size: 35px 35px;
+}
+
+
+.map-grid::after {
+    content: "";
+
+    position: absolute;
+
+    width: 150%;
+
+    height: 1px;
+
+    background: rgba(101,255,154,0.08);
+
+    top: 50%;
+
+    left: -25%;
+
+    transform: rotate(-15deg);
+}
+
+
+.map-crosshair {
+    position: absolute;
+
+    width: 90px;
+    height: 90px;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    border: 1px solid rgba(101,255,154,0.12);
+
+    border-radius: 50%;
+}
+
+
+.map-crosshair::before,
+.map-crosshair::after {
+    content: "";
+
+    position: absolute;
+
+    background: rgba(101,255,154,0.1);
+}
+
+
+.map-crosshair::before {
+    width: 120px;
+    height: 1px;
+
+    left: -16px;
+    top: 44px;
+}
+
+
+.map-crosshair::after {
+    height: 120px;
+    width: 1px;
+
+    left: 44px;
+    top: -16px;
+}
+
+
+.map-marker {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 15px;
+    height: 15px;
+
+    transform: translate(-50%, -50%);
+
+    border: 2px solid #65ff9a;
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 0 6px rgba(101,255,154,0.08),
+        0 0 25px rgba(101,255,154,0.45);
+}
+
+
+.map-marker::after {
+    content: "";
+
+    position: absolute;
+
+    inset: -14px;
+
+    border: 1px solid rgba(101,255,154,0.2);
+
+    border-radius: 50%;
+
+    animation: pulse 2s infinite;
+}
+
+
+@keyframes pulse {
+
+    0% {
+        transform: scale(0.7);
+
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.6);
+
+        opacity: 0;
+    }
+
+}
+
+
+.map-label {
+    position: absolute;
+
+    left: 18px;
+    bottom: 17px;
+
+    border-left: 2px solid #65ff9a;
+
+    padding-left: 10px;
+}
+
+
+.map-label span {
+    display: block;
+
+    color: #606672;
+
+    font-family: "JetBrains Mono", monospace;
+
+    font-size: 7px;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 5px;
+}
+
+
+.map-label strong {
+    font-family: "JetBrains Mono", monospace;
+
+    font-size: 10px;
+}
+
+
+.location-details {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 8px;
+}
+
+
+.location-coordinate {
+    border: 1px solid #1b1d23;
+
+    background: #08090c;
+
+    padding: 18px;
+}
+
+
+.location-coordinate:last-child {
+    grid-column: span 2;
+}
+
+
+.location-coordinate span {
+    display: block;
+
+    color: #606672;
+
+    font-family: "JetBrains Mono", monospace;
+
+    font-size: 8px;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 8px;
+}
+
+
+.location-coordinate strong {
+    font-family: "JetBrains Mono", monospace;
+
+    font-size: 11px;
 }
 
 
@@ -937,7 +1251,7 @@ main {
 }
 
 
-/* ==================== PACKET DETAILS ==================== */
+/* ==================== DETAILS ==================== */
 
 .details {
     border: 1px solid #1b1d23;
@@ -976,7 +1290,14 @@ main {
     grid-template-columns:
         repeat(4, 1fr);
 
-    gap: 20px;
+    gap: 8px;
+}
+
+
+.details-grid > div {
+    border: 1px solid #1b1d23;
+
+    padding: 15px;
 }
 
 
@@ -996,7 +1317,7 @@ main {
 .details-grid strong {
     font-family: "JetBrains Mono", monospace;
 
-    font-size: 11px;
+    font-size: 10px;
 }
 
 
@@ -1216,6 +1537,11 @@ footer a:hover {
             repeat(2, 1fr);
     }
 
+
+    .location-content {
+        grid-template-columns: 1fr;
+    }
+
 }
 
 
@@ -1305,6 +1631,11 @@ footer a:hover {
     }
 
 
+    .input-hint {
+        display: none;
+    }
+
+
     .quick-grid {
         grid-template-columns: 1fr;
     }
@@ -1326,6 +1657,13 @@ footer a:hover {
 
     .network {
         padding: 22px;
+    }
+
+
+    .route-disclaimer {
+        flex-direction: column;
+
+        gap: 8px;
     }
 
 
@@ -1363,6 +1701,16 @@ footer a:hover {
 
     .details-grid {
         grid-template-columns: 1fr 1fr;
+    }
+
+
+    .location-details {
+        grid-template-columns: 1fr;
+    }
+
+
+    .location-coordinate:last-child {
+        grid-column: auto;
     }
 
 

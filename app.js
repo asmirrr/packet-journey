@@ -34,6 +34,9 @@ const ttl =
 const packetId =
     document.getElementById("packetId");
 
+const traceTimestamp =
+    document.getElementById("traceTimestamp");
+
 
 /* ==================== QUICK RESULT ==================== */
 
@@ -104,6 +107,27 @@ const intelCoordinates =
     document.getElementById("intelCoordinates");
 
 
+/* ==================== LOCATION ==================== */
+
+const locationPanel =
+    document.getElementById("locationPanel");
+
+const mapLocation =
+    document.getElementById("mapLocation");
+
+const mapLatitude =
+    document.getElementById("mapLatitude");
+
+const mapLongitude =
+    document.getElementById("mapLongitude");
+
+const mapTimezone =
+    document.getElementById("mapTimezone");
+
+const mapMarker =
+    document.getElementById("mapMarker");
+
+
 /* ==================== HTTP ==================== */
 
 const httpPanel =
@@ -136,19 +160,6 @@ function sleep(ms) {
 }
 
 
-/*
- * Normalize whatever the user enters.
- *
- * Examples:
- *
- * google.com
- * https://google.com
- * https://google.com/
- *
- * all become:
- *
- * google.com
- */
 function normalizeDestination(value) {
 
     return value
@@ -170,6 +181,7 @@ async function resolveDomain(domain) {
 
 
     if (!response.ok) {
+
         throw new Error(
             "DNS request failed"
         );
@@ -264,9 +276,7 @@ async function measureHttpLatency(domain) {
             url,
             {
                 method: "GET",
-
                 mode: "no-cors",
-
                 cache: "no-store"
             }
         );
@@ -300,12 +310,9 @@ function showQuickResult(domain) {
         domain;
 
 
-    quickStatus.textContent =
-        "RESOLVING";
-
-
-    quickStatus.className =
-        "quick-status";
+    setQuickStatus(
+        "RESOLVING"
+    );
 
 
     quickIp.textContent =
@@ -392,10 +399,7 @@ function showDnsSuccess(
 ) {
 
     dnsResult.classList.remove(
-        "hidden"
-    );
-
-    dnsResult.classList.remove(
+        "hidden",
         "error"
     );
 
@@ -417,9 +421,7 @@ function showDnsSuccess(
 }
 
 
-function showDnsError(
-    domain
-) {
+function showDnsError(domain) {
 
     dnsResult.classList.remove(
         "hidden"
@@ -507,6 +509,11 @@ function showIpIntelligence(data) {
     updateQuickIntelligence(
         data
     );
+
+
+    showLocation(
+        data
+    );
 }
 
 
@@ -550,11 +557,94 @@ function showIpIntelligenceError() {
 }
 
 
+/* ==================== LOCATION ==================== */
+
+function showLocation(data) {
+
+    if (
+        data.latitude === undefined ||
+        data.longitude === undefined
+    ) {
+
+        return;
+    }
+
+
+    locationPanel.classList.remove(
+        "hidden"
+    );
+
+
+    const latitude =
+        Number(data.latitude);
+
+    const longitude =
+        Number(data.longitude);
+
+
+    mapLocation.textContent =
+        [
+            data.city,
+            data.country_code
+        ]
+        .filter(Boolean)
+        .join(", ") ||
+        "Unknown";
+
+
+    mapLatitude.textContent =
+        latitude.toFixed(4);
+
+
+    mapLongitude.textContent =
+        longitude.toFixed(4);
+
+
+    mapTimezone.textContent =
+        data.timezone ||
+        "Unknown";
+
+
+    /*
+     * This is a stylized world-space projection.
+     *
+     * It is NOT intended to be a geographic map.
+     *
+     * Longitude:
+     * -180 -> 0%
+     * +180 -> 100%
+     *
+     * Latitude:
+     * +90 -> 0%
+     * -90 -> 100%
+     */
+
+    const x =
+        ((longitude + 180) / 360) * 100;
+
+
+    const y =
+        ((90 - latitude) / 180) * 100;
+
+
+    mapMarker.style.left =
+        `${Math.min(
+            96,
+            Math.max(4, x)
+        )}%`;
+
+
+    mapMarker.style.top =
+        `${Math.min(
+            92,
+            Math.max(8, y)
+        )}%`;
+}
+
+
 /* ==================== HTTP UI ==================== */
 
-function showHttpResult(
-    result
-) {
+function showHttpResult(result) {
 
     httpPanel.classList.remove(
         "hidden"
@@ -645,12 +735,21 @@ function resetNetwork() {
         "WAITING";
 
 
+    traceTimestamp.textContent =
+        "—";
+
+
     dnsResult.classList.add(
         "hidden"
     );
 
 
     intelligencePanel.classList.add(
+        "hidden"
+    );
+
+
+    locationPanel.classList.add(
         "hidden"
     );
 
@@ -670,18 +769,12 @@ async function animatePacketRoute() {
 
 
     packetStatus.textContent =
-        "INITIALIZING";
+        "VISUALIZING ROUTE";
 
 
     await sleep(400);
 
 
-    /*
-     * The route remains conceptual in v2.1.
-     *
-     * These values are NOT claimed to be
-     * real network hop measurements.
-     */
     for (
         let i = 0;
         i < nodes.length;
@@ -713,7 +806,7 @@ async function animatePacketRoute() {
 
 
             packetStatus.textContent =
-                "FORWARDED";
+                "PACKET MOVING";
 
 
             packetId.textContent =
@@ -756,11 +849,11 @@ async function animatePacketRoute() {
 
 
     packetStatus.textContent =
-        "DELIVERED";
+        "VISUALIZATION COMPLETE";
 
 
     connectionStatus.textContent =
-        "CONNECTION ESTABLISHED";
+        "TRACE COMPLETE";
 
 
     setQuickStatus(
@@ -793,6 +886,14 @@ async function tracePacket() {
 
 
     resetNetwork();
+
+
+    const timestamp =
+        new Date();
+
+
+    traceTimestamp.textContent =
+        timestamp.toLocaleTimeString();
 
 
     targetName.textContent =
@@ -849,7 +950,7 @@ async function tracePacket() {
 
 
         connectionStatus.textContent =
-            "RESOLVED";
+            "DNS RESOLVED";
 
 
     } catch (error) {
