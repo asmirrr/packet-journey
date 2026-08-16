@@ -12,15 +12,25 @@
 <body>
 
     <header class="topbar">
+
         <div class="brand">
             <span class="brand-symbol">◈</span>
             PACKET // JOURNEY
         </div>
 
-        <div class="status">
-            <span class="status-dot"></span>
-            SYSTEM ONLINE
+        <div class="header-right">
+
+            <span class="version">
+                v2.0.0
+            </span>
+
+            <div class="status">
+                <span class="status-dot"></span>
+                SYSTEM ONLINE
+            </div>
+
         </div>
+
     </header>
 
 
@@ -29,7 +39,9 @@
         <!-- Hero -->
         <section class="hero">
 
-            <p class="eyebrow">NETWORK VISUALIZATION</p>
+            <p class="eyebrow">
+                NETWORK VISUALIZATION
+            </p>
 
             <h1>
                 Trace a packet.<br>
@@ -37,8 +49,8 @@
             </h1>
 
             <p class="description">
-                Visualize the journey of a network packet from your
-                device to its destination.
+                Explore the network characteristics of a destination
+                using real DNS and IP intelligence data.
             </p>
 
             <div class="trace-input">
@@ -48,6 +60,8 @@
                     type="text"
                     placeholder="Enter a domain or IP address..."
                     value="google.com"
+                    autocomplete="off"
+                    spellcheck="false"
                 >
 
                 <button id="traceButton">
@@ -65,11 +79,19 @@
             <div class="network-header">
 
                 <div>
-                    <p class="section-label">LIVE TRACE</p>
-                    <h2>Packet Route</h2>
+                    <p class="section-label">
+                        LIVE TRACE
+                    </p>
+
+                    <h2>
+                        Packet Route
+                    </h2>
                 </div>
 
-                <div id="connectionStatus" class="connection-status">
+                <div
+                    id="connectionStatus"
+                    class="connection-status"
+                >
                     READY
                 </div>
 
@@ -79,16 +101,29 @@
             <div class="network-map">
 
                 <!-- Device -->
-                <div class="network-node" data-node="device">
+                <div
+                    class="network-node"
+                    data-node="device"
+                >
 
                     <div class="node-icon">
                         ◉
                     </div>
 
                     <div class="node-info">
-                        <span class="node-type">LOCAL</span>
-                        <strong>Your Device</strong>
-                        <small>192.168.1.14</small>
+
+                        <span class="node-type">
+                            LOCAL
+                        </span>
+
+                        <strong>
+                            Your Device
+                        </strong>
+
+                        <small>
+                            Local Host
+                        </small>
+
                     </div>
 
                 </div>
@@ -100,16 +135,29 @@
 
 
                 <!-- Router -->
-                <div class="network-node" data-node="router">
+                <div
+                    class="network-node"
+                    data-node="router"
+                >
 
                     <div class="node-icon">
                         ◉
                     </div>
 
                     <div class="node-info">
-                        <span class="node-type">NETWORK</span>
-                        <strong>Router</strong>
-                        <small>192.168.1.1</small>
+
+                        <span class="node-type">
+                            NETWORK
+                        </span>
+
+                        <strong>
+                            Router
+                        </strong>
+
+                        <small>
+                            Gateway
+                        </small>
+
                     </div>
 
                 </div>
@@ -121,16 +169,29 @@
 
 
                 <!-- ISP -->
-                <div class="network-node" data-node="isp">
+                <div
+                    class="network-node"
+                    data-node="isp"
+                >
 
                     <div class="node-icon">
                         ◉
                     </div>
 
                     <div class="node-info">
-                        <span class="node-type">ISP</span>
-                        <strong>Internet Provider</strong>
-                        <small>Gateway</small>
+
+                        <span class="node-type">
+                            ISP
+                        </span>
+
+                        <strong>
+                            Internet Provider
+                        </strong>
+
+                        <small>
+                            Upstream
+                        </small>
+
                     </div>
 
                 </div>
@@ -142,16 +203,29 @@
 
 
                 <!-- DNS -->
-                <div class="network-node" data-node="dns">
+                <div
+                    class="network-node"
+                    data-node="dns"
+                >
 
                     <div class="node-icon">
                         ◉
                     </div>
 
                     <div class="node-info">
-                        <span class="node-type">DNS</span>
-                        <strong>DNS Server</strong>
-                        <small>Resolver</small>
+
+                        <span class="node-type">
+                            DNS
+                        </span>
+
+                        <strong>
+                            DNS Server
+                        </strong>
+
+                        <small>
+                            Resolver
+                        </small>
+
                     </div>
 
                 </div>
@@ -163,16 +237,29 @@
 
 
                 <!-- Internet -->
-                <div class="network-node" data-node="internet">
+                <div
+                    class="network-node"
+                    data-node="internet"
+                >
 
                     <div class="node-icon">
                         ◉
                     </div>
 
                     <div class="node-info">
-                        <span class="node-type">WAN</span>
-                        <strong>Internet</strong>
-                        <small>Global Network</small>
+
+                        <span class="node-type">
+                            WAN
+                        </span>
+
+                        <strong>
+                            Internet
+                        </strong>
+
+                        <small>
+                            Global Network
+                        </small>
+
                     </div>
 
                 </div>
@@ -184,16 +271,29 @@
 
 
                 <!-- Target -->
-                <div class="network-node target" data-node="target">
+                <div
+                    class="network-node target"
+                    data-node="target"
+                >
 
                     <div class="node-icon">
                         ◉
                     </div>
 
                     <div class="node-info">
-                        <span class="node-type">TARGET</span>
-                        <strong id="targetName">google.com</strong>
-                        <small id="targetIp">Destination</small>
+
+                        <span class="node-type">
+                            TARGET
+                        </span>
+
+                        <strong id="targetName">
+                            google.com
+                        </strong>
+
+                        <small id="targetIp">
+                            Destination
+                        </small>
+
                     </div>
 
                 </div>
@@ -204,13 +304,16 @@
 
 
         <!-- DNS Result -->
-        <section id="dnsResult" class="dns-result hidden">
+        <section
+            id="dnsResult"
+            class="info-panel hidden"
+        >
 
-            <div class="dns-icon">
+            <div class="result-icon">
                 ✓
             </div>
 
-            <div>
+            <div class="result-main">
 
                 <span class="section-label">
                     DNS RESOLUTION
@@ -226,9 +329,11 @@
 
             </div>
 
-            <div class="dns-ip">
+            <div class="result-value">
 
-                <span>IP ADDRESS</span>
+                <span>
+                    IP ADDRESS
+                </span>
 
                 <strong id="resolvedIp">
                     —
@@ -239,27 +344,233 @@
         </section>
 
 
+        <!-- Destination Intelligence -->
+        <section
+            id="intelligencePanel"
+            class="intelligence hidden"
+        >
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        DESTINATION INTELLIGENCE
+                    </p>
+
+                    <h2>
+                        Network Identity
+                    </h2>
+
+                </div>
+
+                <span class="real-badge">
+                    ● LIVE DATA
+                </span>
+
+            </div>
+
+
+            <div class="intelligence-grid">
+
+                <div class="intel-card">
+
+                    <span>
+                        IP ADDRESS
+                    </span>
+
+                    <strong id="intelIp">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="intel-card">
+
+                    <span>
+                        ORGANIZATION
+                    </span>
+
+                    <strong id="intelOrg">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="intel-card">
+
+                    <span>
+                        ASN
+                    </span>
+
+                    <strong id="intelAsn">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="intel-card">
+
+                    <span>
+                        COUNTRY
+                    </span>
+
+                    <strong id="intelCountry">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="intel-card">
+
+                    <span>
+                        CITY
+                    </span>
+
+                    <strong id="intelCity">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="intel-card">
+
+                    <span>
+                        REGION
+                    </span>
+
+                    <strong id="intelRegion">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="intel-card">
+
+                    <span>
+                        TIMEZONE
+                    </span>
+
+                    <strong id="intelTimezone">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="intel-card">
+
+                    <span>
+                        COORDINATES
+                    </span>
+
+                    <strong id="intelCoordinates">
+                        —
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- HTTP Measurement -->
+        <section
+            id="httpPanel"
+            class="http-panel hidden"
+        >
+
+            <div class="http-left">
+
+                <p class="section-label">
+                    HTTP MEASUREMENT
+                </p>
+
+                <h2>
+                    Destination Response
+                </h2>
+
+                <p id="httpMessage">
+                    Measuring response time...
+                </p>
+
+            </div>
+
+
+            <div class="http-value">
+
+                <strong id="httpLatency">
+                    —
+                </strong>
+
+                <span>
+                    ms
+                </span>
+
+            </div>
+
+        </section>
+
+
         <!-- Statistics -->
         <section class="dashboard">
 
             <div class="stat-card">
-                <span>PACKETS</span>
-                <strong id="packetCount">0 / 32</strong>
+
+                <span>
+                    PACKETS
+                </span>
+
+                <strong id="packetCount">
+                    0 / 32
+                </strong>
+
             </div>
 
-            <div class="stat-card">
-                <span>HOPS</span>
-                <strong id="hopCount">0</strong>
-            </div>
 
             <div class="stat-card">
-                <span>LATENCY</span>
-                <strong id="latency">— ms</strong>
+
+                <span>
+                    HOPS
+                </span>
+
+                <strong id="hopCount">
+                    0
+                </strong>
+
             </div>
 
+
             <div class="stat-card">
-                <span>PROTOCOL</span>
-                <strong>TCP/IP</strong>
+
+                <span>
+                    HTTP
+                </span>
+
+                <strong id="latency">
+                    — ms
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    PROTOCOL
+                </span>
+
+                <strong>
+                    TCP/IP
+                </strong>
+
             </div>
 
         </section>
@@ -284,26 +595,54 @@
             <div class="details-grid">
 
                 <div>
-                    <span>SOURCE</span>
-                    <strong>192.168.1.14</strong>
+
+                    <span>
+                        SOURCE
+                    </span>
+
+                    <strong>
+                        LOCAL HOST
+                    </strong>
+
                 </div>
 
+
                 <div>
-                    <span>DESTINATION</span>
+
+                    <span>
+                        DESTINATION
+                    </span>
 
                     <strong id="detailDestination">
                         google.com
                     </strong>
+
                 </div>
 
-                <div>
-                    <span>TTL</span>
-                    <strong id="ttl">64</strong>
-                </div>
 
                 <div>
-                    <span>PACKET ID</span>
-                    <strong id="packetId">—</strong>
+
+                    <span>
+                        TTL
+                    </span>
+
+                    <strong id="ttl">
+                        64
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        PACKET ID
+                    </span>
+
+                    <strong id="packetId">
+                        —
+                    </strong>
+
                 </div>
 
             </div>
@@ -315,13 +654,34 @@
 
     <footer>
 
-        <span>
-            PACKET // JOURNEY
-        </span>
+        <div class="footer-brand">
+            <span>
+                PACKET // JOURNEY
+            </span>
 
-        <span>
-            Network visualization experiment
-        </span>
+            <span class="footer-version">
+                v2.0.0
+            </span>
+        </div>
+
+        <div class="footer-info">
+
+            <span>
+                Network visualization experiment
+            </span>
+
+            <span>
+                IP data powered by
+                <a
+                    href="https://ipapi.co/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    ipapi
+                </a>
+            </span>
+
+        </div>
 
     </footer>
 

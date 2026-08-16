@@ -1,9 +1,17 @@
-const traceButton = document.getElementById("traceButton");
-const destinationInput = document.getElementById("destination");
+const traceButton =
+    document.getElementById("traceButton");
 
-const targetName = document.getElementById("targetName");
-const targetIp = document.getElementById("targetIp");
-const detailDestination = document.getElementById("detailDestination");
+const destinationInput =
+    document.getElementById("destination");
+
+const targetName =
+    document.getElementById("targetName");
+
+const targetIp =
+    document.getElementById("targetIp");
+
+const detailDestination =
+    document.getElementById("detailDestination");
 
 const connectionStatus =
     document.getElementById("connectionStatus");
@@ -26,6 +34,9 @@ const ttl =
 const packetId =
     document.getElementById("packetId");
 
+
+/* DNS */
+
 const dnsResult =
     document.getElementById("dnsResult");
 
@@ -38,6 +49,51 @@ const dnsMessage =
 const resolvedIp =
     document.getElementById("resolvedIp");
 
+
+/* IP Intelligence */
+
+const intelligencePanel =
+    document.getElementById("intelligencePanel");
+
+const intelIp =
+    document.getElementById("intelIp");
+
+const intelOrg =
+    document.getElementById("intelOrg");
+
+const intelAsn =
+    document.getElementById("intelAsn");
+
+const intelCountry =
+    document.getElementById("intelCountry");
+
+const intelCity =
+    document.getElementById("intelCity");
+
+const intelRegion =
+    document.getElementById("intelRegion");
+
+const intelTimezone =
+    document.getElementById("intelTimezone");
+
+const intelCoordinates =
+    document.getElementById("intelCoordinates");
+
+
+/* HTTP */
+
+const httpPanel =
+    document.getElementById("httpPanel");
+
+const httpMessage =
+    document.getElementById("httpMessage");
+
+const httpLatency =
+    document.getElementById("httpLatency");
+
+
+/* Network */
+
 const nodes =
     document.querySelectorAll(".network-node");
 
@@ -46,7 +102,8 @@ const packets =
 
 
 /*
- * Utility function used to pause the animation.
+ * Pause execution for a specified
+ * amount of time.
  */
 function sleep(ms) {
 
@@ -60,8 +117,8 @@ function sleep(ms) {
 /*
  * Perform a real DNS-over-HTTPS lookup.
  *
- * Google's public DNS resolver returns a JSON response
- * containing DNS records for the requested domain.
+ * Google's public DNS resolver returns
+ * JSON containing DNS records.
  */
 async function resolveDomain(domain) {
 
@@ -71,9 +128,11 @@ async function resolveDomain(domain) {
     const response =
         await fetch(url);
 
+
     if (!response.ok) {
         throw new Error("DNS request failed");
     }
+
 
     const data =
         await response.json();
@@ -82,16 +141,18 @@ async function resolveDomain(domain) {
     /*
      * DNS status 0 means NOERROR.
      *
-     * We also require an Answer section because a domain
-     * can technically exist without having an A record.
+     * We also require an Answer section.
      */
-    if (data.Status !== 0 || !data.Answer) {
+    if (
+        data.Status !== 0 ||
+        !data.Answer
+    ) {
         throw new Error("Domain not found");
     }
 
 
     /*
-     * DNS record type 1 = IPv4 / A record.
+     * DNS type 1 = IPv4 A record.
      */
     const ipv4Record =
         data.Answer.find(
@@ -100,7 +161,9 @@ async function resolveDomain(domain) {
 
 
     if (!ipv4Record) {
-        throw new Error("No IPv4 address found");
+        throw new Error(
+            "No IPv4 address found"
+        );
     }
 
 
@@ -109,13 +172,115 @@ async function resolveDomain(domain) {
 
 
 /*
+ * Query ipapi for real information
+ * about the resolved IP address.
+ *
+ * ipapi provides city, region, country,
+ * latitude, longitude, timezone, ASN,
+ * organization and other IP metadata.
+ */
+async function getIpIntelligence(ip) {
+
+    const url =
+        `https://ipapi.co/${encodeURIComponent(ip)}/json/`;
+
+
+    const response =
+        await fetch(url);
+
+
+    if (!response.ok) {
+        throw new Error(
+            "IP intelligence request failed"
+        );
+    }
+
+
+    const data =
+        await response.json();
+
+
+    if (data.error) {
+        throw new Error(
+            data.reason || "IP lookup failed"
+        );
+    }
+
+
+    return data;
+}
+
+
+/*
+ * Measure how long an HTTP request to
+ * the destination takes.
+ *
+ * This is NOT an ICMP ping.
+ *
+ * It measures the browser's HTTP request
+ * timing where the destination allows the
+ * request.
+ */
+async function measureHttpLatency(domain) {
+
+    const url =
+        `https://${domain}/`;
+
+
+    const start =
+        performance.now();
+
+
+    try {
+
+        /*
+         * no-cors allows the browser to send
+         * the request even when the destination
+         * does not expose CORS headers.
+         *
+         * The response itself is opaque, but
+         * request timing can still be measured.
+         */
+        await fetch(
+            url,
+            {
+                method: "GET",
+                mode: "no-cors",
+                cache: "no-store"
+            }
+        );
+
+
+        const end =
+            performance.now();
+
+
+        return Math.round(
+            end - start
+        );
+
+    } catch (error) {
+
+        return null;
+    }
+}
+
+
+/*
  * Display successful DNS resolution.
  */
-function showDnsSuccess(domain, ip) {
+function showDnsSuccess(
+    domain,
+    ip
+) {
 
-    dnsResult.classList.remove("hidden");
+    dnsResult.classList.remove(
+        "hidden"
+    );
 
-    dnsResult.classList.remove("error");
+    dnsResult.classList.remove(
+        "error"
+    );
 
 
     dnsTitle.textContent =
@@ -138,11 +303,17 @@ function showDnsSuccess(domain, ip) {
 /*
  * Display DNS failure.
  */
-function showDnsError(domain) {
+function showDnsError(
+    domain
+) {
 
-    dnsResult.classList.remove("hidden");
+    dnsResult.classList.remove(
+        "hidden"
+    );
 
-    dnsResult.classList.add("error");
+    dnsResult.classList.add(
+        "error"
+    );
 
 
     dnsTitle.textContent =
@@ -163,8 +334,113 @@ function showDnsError(domain) {
 
 
 /*
- * Reset the entire visualization before
- * starting another trace.
+ * Display IP intelligence.
+ */
+function showIpIntelligence(data) {
+
+    intelligencePanel.classList.remove(
+        "hidden"
+    );
+
+
+    intelIp.textContent =
+        data.ip || "—";
+
+
+    intelOrg.textContent =
+        data.org || "Unknown";
+
+
+    intelAsn.textContent =
+        data.asn || "Unknown";
+
+
+    intelCountry.textContent =
+        data.country_name ||
+        data.country_code ||
+        "Unknown";
+
+
+    intelCity.textContent =
+        data.city ||
+        "Unknown";
+
+
+    intelRegion.textContent =
+        data.region ||
+        "Unknown";
+
+
+    intelTimezone.textContent =
+        data.timezone ||
+        "Unknown";
+
+
+    if (
+        data.latitude !== undefined &&
+        data.longitude !== undefined
+    ) {
+
+        intelCoordinates.textContent =
+            `${data.latitude}, ${data.longitude}`;
+
+    } else {
+
+        intelCoordinates.textContent =
+            "Unavailable";
+
+    }
+}
+
+
+/*
+ * Display an IP intelligence failure.
+ *
+ * DNS can succeed even when the secondary
+ * intelligence service is unavailable.
+ */
+function showIpIntelligenceError() {
+
+    intelligencePanel.classList.remove(
+        "hidden"
+    );
+
+
+    intelIp.textContent =
+        "Unavailable";
+
+
+    intelOrg.textContent =
+        "Unavailable";
+
+
+    intelAsn.textContent =
+        "Unavailable";
+
+
+    intelCountry.textContent =
+        "Unavailable";
+
+
+    intelCity.textContent =
+        "Unavailable";
+
+
+    intelRegion.textContent =
+        "Unavailable";
+
+
+    intelTimezone.textContent =
+        "Unavailable";
+
+
+    intelCoordinates.textContent =
+        "Unavailable";
+}
+
+
+/*
+ * Reset the visualization.
  */
 function resetNetwork() {
 
@@ -209,116 +485,72 @@ function resetNetwork() {
 
     packetStatus.textContent =
         "WAITING";
+
+
+    dnsResult.classList.add(
+        "hidden"
+    );
+
+
+    intelligencePanel.classList.add(
+        "hidden"
+    );
+
+
+    httpPanel.classList.add(
+        "hidden"
+    );
 }
 
 
 /*
- * Main trace function.
- *
- * Step 1:
- * Validate user input.
- *
- * Step 2:
- * Perform REAL DNS resolution.
- *
- * Step 3:
- * If DNS fails, stop.
- *
- * Step 4:
- * If DNS succeeds, run the
- * simulated network visualization.
+ * Display HTTP measurement.
  */
-async function tracePacket() {
+function showHttpResult(
+    result
+) {
 
-    const destination =
-        destinationInput.value.trim();
+    httpPanel.classList.remove(
+        "hidden"
+    );
 
 
-    if (!destination) {
+    if (result === null) {
 
-        destinationInput.focus();
+        httpLatency.textContent =
+            "—";
+
+
+        httpMessage.textContent =
+            "The destination could not be measured from the browser.";
 
         return;
     }
 
 
-    resetNetwork();
+    httpLatency.textContent =
+        result;
 
 
-    targetName.textContent =
-        destination;
+    httpMessage.textContent =
+        "Measured browser HTTP request time to the destination.";
 
 
-    detailDestination.textContent =
-        destination;
+    latency.textContent =
+        `${result} ms`;
+}
 
 
-    targetIp.textContent =
-        "Resolving...";
+/*
+ * Run the simulated packet route.
+ *
+ * The route itself is still simulated.
+ *
+ * Version 3 will replace this with
+ * actual traceroute information.
+ */
+async function animatePacketRoute() {
 
-
-    dnsResult.classList.add("hidden");
-
-
-    connectionStatus.textContent =
-        "RESOLVING";
-
-
-    packetStatus.textContent =
-        "DNS LOOKUP";
-
-
-    /*
-     * REAL DNS LOOKUP
-     */
-    try {
-
-        const ip =
-            await resolveDomain(destination);
-
-
-        showDnsSuccess(
-            destination,
-            ip
-        );
-
-
-        connectionStatus.textContent =
-            "RESOLVED";
-
-
-        await sleep(700);
-
-
-    } catch (error) {
-
-        showDnsError(
-            destination
-        );
-
-
-        connectionStatus.textContent =
-            "DNS FAILED";
-
-
-        packetStatus.textContent =
-            "DOMAIN NOT FOUND";
-
-
-        /*
-         * Most importantly:
-         * DO NOT continue the animation.
-         */
-        return;
-    }
-
-
-    /*
-     * DNS succeeded.
-     *
-     * The rest of the network route is
-     * currently simulated.
-     */
     connectionStatus.textContent =
         "TRACING";
 
@@ -331,11 +563,10 @@ async function tracePacket() {
 
 
     /*
-     * Simulated latency values.
-     *
-     * These are NOT real ping measurements yet.
+     * These are intentionally not presented
+     * as real network measurements.
      */
-    const hopLatencies = [
+    const simulatedHopTimes = [
         2,
         5,
         9,
@@ -344,9 +575,6 @@ async function tracePacket() {
     ];
 
 
-    /*
-     * Move through every network node.
-     */
     for (
         let i = 0;
         i < nodes.length;
@@ -366,10 +594,6 @@ async function tracePacket() {
             i;
 
 
-        /*
-         * Every node after the first
-         * has a connection/packet animation.
-         */
         if (i > 0) {
 
             const packet =
@@ -388,21 +612,13 @@ async function tracePacket() {
             packetId.textContent =
                 "#" +
                 Math.floor(
-                    Math.random() * 90000 + 10000
+                    Math.random() * 90000 +
+                    10000
                 );
 
 
             ttl.textContent =
                 64 - i;
-
-
-            if (hopLatencies[i - 1]) {
-
-                latency.textContent =
-                    hopLatencies[i - 1] +
-                    " ms";
-
-            }
 
 
             await sleep(1000);
@@ -423,9 +639,6 @@ async function tracePacket() {
     }
 
 
-    /*
-     * Trace completed.
-     */
     packetCount.textContent =
         "32 / 32";
 
@@ -434,18 +647,188 @@ async function tracePacket() {
         nodes.length - 1;
 
 
-    latency.textContent =
-        hopLatencies[
-            hopLatencies.length - 1
-        ] + " ms";
-
-
     packetStatus.textContent =
         "DELIVERED";
 
 
     connectionStatus.textContent =
         "CONNECTION ESTABLISHED";
+}
+
+
+/*
+ * Main trace workflow.
+ */
+async function tracePacket() {
+
+    const destination =
+        destinationInput.value
+            .trim()
+            .replace(/^https?:\/\//i, "")
+            .replace(/\/.*$/, "");
+
+
+    if (!destination) {
+
+        destinationInput.focus();
+
+        return;
+    }
+
+
+    /*
+     * Prevent duplicate traces while
+     * the current trace is running.
+     */
+    traceButton.disabled =
+        true;
+
+
+    resetNetwork();
+
+
+    targetName.textContent =
+        destination;
+
+
+    detailDestination.textContent =
+        destination;
+
+
+    targetIp.textContent =
+        "Resolving...";
+
+
+    connectionStatus.textContent =
+        "RESOLVING";
+
+
+    packetStatus.textContent =
+        "DNS LOOKUP";
+
+
+    /*
+     * STEP 1
+     *
+     * Real DNS resolution.
+     */
+    let ip;
+
+
+    try {
+
+        ip =
+            await resolveDomain(
+                destination
+            );
+
+
+        showDnsSuccess(
+            destination,
+            ip
+        );
+
+
+        connectionStatus.textContent =
+            "RESOLVED";
+
+
+    } catch (error) {
+
+        showDnsError(
+            destination
+        );
+
+
+        connectionStatus.textContent =
+            "DNS FAILED";
+
+
+        packetStatus.textContent =
+            "DOMAIN NOT FOUND";
+
+
+        traceButton.disabled =
+            false;
+
+
+        return;
+    }
+
+
+    /*
+     * STEP 2
+     *
+     * Real IP intelligence.
+     */
+    packetStatus.textContent =
+        "IP INTELLIGENCE";
+
+
+    try {
+
+        const data =
+            await getIpIntelligence(
+                ip
+            );
+
+
+        showIpIntelligence(
+            data
+        );
+
+
+    } catch (error) {
+
+        showIpIntelligenceError();
+
+    }
+
+
+    /*
+     * STEP 3
+     *
+     * Measure browser HTTP request.
+     */
+    packetStatus.textContent =
+        "MEASURING HTTP";
+
+
+    httpPanel.classList.remove(
+        "hidden"
+    );
+
+
+    httpMessage.textContent =
+        "Measuring response time...";
+
+
+    httpLatency.textContent =
+        "—";
+
+
+    const httpTime =
+        await measureHttpLatency(
+            destination
+        );
+
+
+    showHttpResult(
+        httpTime
+    );
+
+
+    /*
+     * STEP 4
+     *
+     * Run the current simulated
+     * network visualization.
+     */
+    await animatePacketRoute();
+
+
+    traceButton.disabled =
+        false;
 }
 
 
@@ -459,8 +842,7 @@ traceButton.addEventListener(
 
 
 /*
- * Pressing Enter in the input
- * also starts the trace.
+ * Press Enter to trace.
  */
 destinationInput.addEventListener(
     "keydown",
