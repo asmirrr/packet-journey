@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Packet Journey</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="brand">
+            <span class="brand-symbol">◈</span>
+            PACKET // JOURNEY
+        </div>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            SYSTEM ONLINE
+        </div>
+    </header>
+
+
+    <main>
+
+        <!-- Hero / Input -->
+        <section class="hero">
+
+            <p class="eyebrow">NETWORK VISUALIZATION</p>
+
+            <h1>
+                Trace a packet.<br>
+                <span>Watch it travel.</span>
+            </h1>
+
+            <p class="description">
+                Visualize the journey of a network packet from your
+                device to its destination.
+            </p>
+
+            <div class="trace-input">
+
+                <input
+                    id="destination"
+                    type="text"
+                    placeholder="Enter a domain or IP address..."
+                    value="google.com"
+                >
+
+                <button id="traceButton">
+                    TRACE →
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- Network Visualization -->
+        <section class="network">
+
+            <div class="network-header">
+                <div>
+                    <p class="section-label">LIVE TRACE</p>
+                    <h2>Packet Route</h2>
+                </div>
+
+                <div id="connectionStatus" class="connection-status">
+                    READY
+                </div>
+            </div>
+
+
+            <div class="network-map">
+
+                <!-- Node 1 -->
+                <div class="network-node" data-node="device">
+
+                    <div class="node-icon">
+                        ◉
+                    </div>
+
+                    <div class="node-info">
+                        <span class="node-type">LOCAL</span>
+                        <strong>Your Device</strong>
+                        <small>192.168.1.14</small>
+                    </div>
+
+                </div>
+
+
+                <div class="connection">
+                    <div class="packet"></div>
+                </div>
+
+
+                <!-- Node 2 -->
+                <div class="network-node" data-node="router">
+
+                    <div class="node-icon">
+                        ◉
+                    </div>
+
+                    <div class="node-info">
+                        <span class="node-type">NETWORK</span>
+                        <strong>Router</strong>
+                        <small>192.168.1.1</small>
+                    </div>
+
+                </div>
+
+
+                <div class="connection">
+                    <div class="packet"></div>
+                </div>
+
+
+                <!-- Node 3 -->
+                <div class="network-node" data-node="isp">
+
+                    <div class="node-icon">
+                        ◉
+                    </div>
+
+                    <div class="node-info">
+                        <span class="node-type">ISP</span>
+                        <strong>Internet Provider</strong>
+                        <small>Gateway</small>
+                    </div>
+
+                </div>
+
+
+                <div class="connection">
+                    <div class="packet"></div>
+                </div>
+
+
+                <!-- Node 4 -->
+                <div class="network-node" data-node="dns">
+
+                    <div class="node-icon">
+                        ◉
+                    </div>
+
+                    <div class="node-info">
+                        <span class="node-type">DNS</span>
+                        <strong>DNS Server</strong>
+                        <small>Resolver</small>
+                    </div>
+
+                </div>
+
+
+                <div class="connection">
+                    <div class="packet"></div>
+                </div>
+
+
+                <!-- Node 5 -->
+                <div class="network-node" data-node="internet">
+
+                    <div class="node-icon">
+                        ◉
+                    </div>
+
+                    <div class="node-info">
+                        <span class="node-type">WAN</span>
+                        <strong>Internet</strong>
+                        <small>Global Network</small>
+                    </div>
+
+                </div>
+
+
+                <div class="connection">
+                    <div class="packet"></div>
+                </div>
+
+
+                <!-- Node 6 -->
+                <div class="network-node target" data-node="target">
+
+                    <div class="node-icon">
+                        ◉
+                    </div>
+
+                    <div class="node-info">
+                        <span class="node-type">TARGET</span>
+                        <strong id="targetName">google.com</strong>
+                        <small>Destination</small>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Statistics -->
+        <section class="dashboard">
+
+            <div class="stat-card">
+                <span>PACKETS</span>
+                <strong id="packetCount">0 / 32</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>HOPS</span>
+                <strong id="hopCount">0</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>LATENCY</span>
+                <strong id="latency">— ms</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>PROTOCOL</span>
+                <strong>TCP/IP</strong>
+            </div>
+
+        </section>
+
+
+        <!-- Packet Details -->
+        <section class="details">
+
+            <div class="details-header">
+                <p class="section-label">PACKET INSPECTOR</p>
+                <span id="packetStatus">WAITING</span>
+            </div>
+
+            <div class="details-grid">
+
+                <div>
+                    <span>SOURCE</span>
+                    <strong>192.168.1.14</strong>
+                </div>
+
+                <div>
+                    <span>DESTINATION</span>
+                    <strong id="detailDestination">
+                        google.com
+                    </strong>
+                </div>
+
+                <div>
+                    <span>TTL</span>
+                    <strong id="ttl">64</strong>
+                </div>
+
+                <div>
+                    <span>PACKET ID</span>
+                    <strong id="packetId">—</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+        PACKET // JOURNEY
+        <span>Network visualization experiment</span>
+    </footer>
+
+
+    <script src="app.js"></script>
+
+</body>
+</html>
