@@ -42,7 +42,7 @@ Latency Measurement
 IP Geolocation
        ↓
 Packet Journey Visualization
-````
+```
 
 ### 1. DNS Resolution
 
@@ -84,6 +84,14 @@ The visualization is intended to make networking concepts easier to understand r
 ---
 
 ## Version History
+
+### v2.3.1
+
+* Restored the v2.2 visual style for the Live Trace / packet route
+* Preserved the real networking and geolocation functionality introduced in v2.3
+* Preserved the improved information layout and explanation section
+* Updated the visible application version to v2.3.1
+* No changes to the underlying network measurement logic
 
 ### v2.3
 
@@ -150,6 +158,7 @@ Packet Journey is intentionally being developed in small versions so that each u
 * [x] Built-in explanation section
 * [x] Version indicator
 * [x] GitHub project link
+* [x] Restored v2.2 Live Trace visual style in v2.3.1
 
 ### Future
 
@@ -248,7 +257,7 @@ Instead of simply typing a website into a browser and receiving a page, the proj
 
 **Packet Journey:**
 
-[https://asmirrr.github.io/packet-journey/](https://asmirrr.github.io/packet-journey/)
+https://asmirrr.github.io/packet-journey/
 
 ---
 
@@ -256,7 +265,7 @@ Instead of simply typing a website into a browser and receiving a page, the proj
 
 **Source Code:**
 
-[https://github.com/asmirrr/packet-journey](https://github.com/asmirrr/packet-journey)
+https://github.com/asmirrr/packet-journey
 
 ---
 
