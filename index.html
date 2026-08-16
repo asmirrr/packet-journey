@@ -11,6 +11,8 @@
 
 <body>
 
+    <!-- ==================== HEADER ==================== -->
+
     <header class="topbar">
 
         <div class="brand">
@@ -21,7 +23,7 @@
         <div class="header-right">
 
             <span class="version">
-                v2.0.0
+                v2.1.0
             </span>
 
             <div class="status">
@@ -36,29 +38,39 @@
 
     <main>
 
-        <!-- Hero -->
+        <!-- ==================== HERO ==================== -->
+
         <section class="hero">
 
-            <p class="eyebrow">
-                NETWORK VISUALIZATION
-            </p>
+            <div class="hero-copy">
 
-            <h1>
-                Trace a packet.<br>
-                <span>Watch it travel.</span>
-            </h1>
+                <p class="eyebrow">
+                    NETWORK VISUALIZATION
+                </p>
 
-            <p class="description">
-                Explore the network characteristics of a destination
-                using real DNS and IP intelligence data.
-            </p>
+                <h1>
+                    See where your<br>
+                    <span>packet goes.</span>
+                </h1>
+
+                <p class="description">
+                    Explore the network identity and response characteristics
+                    of any internet destination.
+                </p>
+
+            </div>
+
 
             <div class="trace-input">
+
+                <div class="input-prefix">
+                    DESTINATION
+                </div>
 
                 <input
                     id="destination"
                     type="text"
-                    placeholder="Enter a domain or IP address..."
+                    placeholder="google.com"
                     value="google.com"
                     autocomplete="off"
                     spellcheck="false"
@@ -73,12 +85,103 @@
         </section>
 
 
-        <!-- Network Visualization -->
+        <!-- ==================== QUICK RESULT ==================== -->
+
+        <section
+            id="quickResult"
+            class="quick-result hidden"
+        >
+
+            <div class="quick-result-header">
+
+                <div>
+
+                    <p class="section-label">
+                        DESTINATION SUMMARY
+                    </p>
+
+                    <h2 id="quickDestination">
+                        google.com
+                    </h2>
+
+                </div>
+
+                <div
+                    id="quickStatus"
+                    class="quick-status"
+                >
+                    WAITING
+                </div>
+
+            </div>
+
+
+            <div class="quick-grid">
+
+                <div class="quick-item">
+
+                    <span>
+                        IP ADDRESS
+                    </span>
+
+                    <strong id="quickIp">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="quick-item">
+
+                    <span>
+                        LOCATION
+                    </span>
+
+                    <strong id="quickLocation">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="quick-item">
+
+                    <span>
+                        ORGANIZATION
+                    </span>
+
+                    <strong id="quickOrg">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="quick-item">
+
+                    <span>
+                        HTTP RESPONSE
+                    </span>
+
+                    <strong id="quickLatency">
+                        —
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================== NETWORK VISUALIZATION ==================== -->
+
         <section class="network">
 
             <div class="network-header">
 
                 <div>
+
                     <p class="section-label">
                         LIVE TRACE
                     </p>
@@ -86,6 +189,7 @@
                     <h2>
                         Packet Route
                     </h2>
+
                 </div>
 
                 <div
@@ -98,201 +202,211 @@
             </div>
 
 
-            <div class="network-map">
+            <div class="network-scroll">
 
-                <!-- Device -->
-                <div
-                    class="network-node"
-                    data-node="device"
-                >
+                <div class="network-map">
 
-                    <div class="node-icon">
-                        ◉
-                    </div>
+                    <!-- LOCAL DEVICE -->
 
-                    <div class="node-info">
+                    <div
+                        class="network-node"
+                        data-node="device"
+                    >
 
-                        <span class="node-type">
-                            LOCAL
-                        </span>
+                        <div class="node-icon">
+                            ◉
+                        </div>
 
-                        <strong>
-                            Your Device
-                        </strong>
+                        <div class="node-info">
 
-                        <small>
-                            Local Host
-                        </small>
+                            <span class="node-type">
+                                LOCAL
+                            </span>
 
-                    </div>
+                            <strong>
+                                Your Device
+                            </strong>
 
-                </div>
+                            <small>
+                                Local Host
+                            </small>
 
-
-                <div class="connection">
-                    <div class="packet"></div>
-                </div>
-
-
-                <!-- Router -->
-                <div
-                    class="network-node"
-                    data-node="router"
-                >
-
-                    <div class="node-icon">
-                        ◉
-                    </div>
-
-                    <div class="node-info">
-
-                        <span class="node-type">
-                            NETWORK
-                        </span>
-
-                        <strong>
-                            Router
-                        </strong>
-
-                        <small>
-                            Gateway
-                        </small>
+                        </div>
 
                     </div>
 
-                </div>
 
-
-                <div class="connection">
-                    <div class="packet"></div>
-                </div>
-
-
-                <!-- ISP -->
-                <div
-                    class="network-node"
-                    data-node="isp"
-                >
-
-                    <div class="node-icon">
-                        ◉
+                    <div class="connection">
+                        <div class="packet"></div>
                     </div>
 
-                    <div class="node-info">
 
-                        <span class="node-type">
-                            ISP
-                        </span>
+                    <!-- ROUTER -->
 
-                        <strong>
-                            Internet Provider
-                        </strong>
+                    <div
+                        class="network-node"
+                        data-node="router"
+                    >
 
-                        <small>
-                            Upstream
-                        </small>
+                        <div class="node-icon">
+                            ◉
+                        </div>
 
-                    </div>
+                        <div class="node-info">
 
-                </div>
+                            <span class="node-type">
+                                NETWORK
+                            </span>
 
+                            <strong>
+                                Router
+                            </strong>
 
-                <div class="connection">
-                    <div class="packet"></div>
-                </div>
+                            <small>
+                                Gateway
+                            </small>
 
-
-                <!-- DNS -->
-                <div
-                    class="network-node"
-                    data-node="dns"
-                >
-
-                    <div class="node-icon">
-                        ◉
-                    </div>
-
-                    <div class="node-info">
-
-                        <span class="node-type">
-                            DNS
-                        </span>
-
-                        <strong>
-                            DNS Server
-                        </strong>
-
-                        <small>
-                            Resolver
-                        </small>
+                        </div>
 
                     </div>
 
-                </div>
 
-
-                <div class="connection">
-                    <div class="packet"></div>
-                </div>
-
-
-                <!-- Internet -->
-                <div
-                    class="network-node"
-                    data-node="internet"
-                >
-
-                    <div class="node-icon">
-                        ◉
+                    <div class="connection">
+                        <div class="packet"></div>
                     </div>
 
-                    <div class="node-info">
 
-                        <span class="node-type">
-                            WAN
-                        </span>
+                    <!-- ISP -->
 
-                        <strong>
-                            Internet
-                        </strong>
+                    <div
+                        class="network-node"
+                        data-node="isp"
+                    >
 
-                        <small>
-                            Global Network
-                        </small>
+                        <div class="node-icon">
+                            ◉
+                        </div>
+
+                        <div class="node-info">
+
+                            <span class="node-type">
+                                ISP
+                            </span>
+
+                            <strong>
+                                Internet Provider
+                            </strong>
+
+                            <small>
+                                Upstream
+                            </small>
+
+                        </div>
 
                     </div>
 
-                </div>
 
-
-                <div class="connection">
-                    <div class="packet"></div>
-                </div>
-
-
-                <!-- Target -->
-                <div
-                    class="network-node target"
-                    data-node="target"
-                >
-
-                    <div class="node-icon">
-                        ◉
+                    <div class="connection">
+                        <div class="packet"></div>
                     </div>
 
-                    <div class="node-info">
 
-                        <span class="node-type">
-                            TARGET
-                        </span>
+                    <!-- DNS -->
 
-                        <strong id="targetName">
-                            google.com
-                        </strong>
+                    <div
+                        class="network-node"
+                        data-node="dns"
+                    >
 
-                        <small id="targetIp">
-                            Destination
-                        </small>
+                        <div class="node-icon">
+                            ◉
+                        </div>
+
+                        <div class="node-info">
+
+                            <span class="node-type">
+                                DNS
+                            </span>
+
+                            <strong>
+                                DNS Server
+                            </strong>
+
+                            <small>
+                                Resolver
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="connection">
+                        <div class="packet"></div>
+                    </div>
+
+
+                    <!-- INTERNET -->
+
+                    <div
+                        class="network-node"
+                        data-node="internet"
+                    >
+
+                        <div class="node-icon">
+                            ◉
+                        </div>
+
+                        <div class="node-info">
+
+                            <span class="node-type">
+                                WAN
+                            </span>
+
+                            <strong>
+                                Internet
+                            </strong>
+
+                            <small>
+                                Global Network
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="connection">
+                        <div class="packet"></div>
+                    </div>
+
+
+                    <!-- TARGET -->
+
+                    <div
+                        class="network-node target"
+                        data-node="target"
+                    >
+
+                        <div class="node-icon">
+                            ◉
+                        </div>
+
+                        <div class="node-info">
+
+                            <span class="node-type">
+                                TARGET
+                            </span>
+
+                            <strong id="targetName">
+                                google.com
+                            </strong>
+
+                            <small id="targetIp">
+                                Destination
+                            </small>
+
+                        </div>
 
                     </div>
 
@@ -303,7 +417,8 @@
         </section>
 
 
-        <!-- DNS Result -->
+        <!-- ==================== DNS RESULT ==================== -->
+
         <section
             id="dnsResult"
             class="info-panel hidden"
@@ -344,7 +459,8 @@
         </section>
 
 
-        <!-- Destination Intelligence -->
+        <!-- ==================== DESTINATION INTELLIGENCE ==================== -->
+
         <section
             id="intelligencePanel"
             class="intelligence hidden"
@@ -481,7 +597,8 @@
         </section>
 
 
-        <!-- HTTP Measurement -->
+        <!-- ==================== HTTP ==================== -->
+
         <section
             id="httpPanel"
             class="http-panel hidden"
@@ -519,7 +636,8 @@
         </section>
 
 
-        <!-- Statistics -->
+        <!-- ==================== STATISTICS ==================== -->
+
         <section class="dashboard">
 
             <div class="stat-card">
@@ -576,7 +694,8 @@
         </section>
 
 
-        <!-- Packet Details -->
+        <!-- ==================== PACKET INSPECTOR ==================== -->
+
         <section class="details">
 
             <div class="details-header">
@@ -649,20 +768,139 @@
 
         </section>
 
+
+        <!-- ==================== EXPLANATION ==================== -->
+
+        <section class="explanation">
+
+            <div class="explanation-heading">
+
+                <p class="section-label">
+                    ABOUT THE PROJECT
+                </p>
+
+                <h2>
+                    What is Packet Journey?
+                </h2>
+
+            </div>
+
+
+            <div class="explanation-content">
+
+                <div class="explanation-main">
+
+                    <p>
+                        When you connect to a website, your request doesn't
+                        simply travel directly from your computer to a server.
+                        It passes through multiple systems that help move
+                        information across the internet.
+                    </p>
+
+                    <p>
+                        Packet Journey visualizes that process. Enter a
+                        destination and the application resolves its domain,
+                        identifies the destination's network information,
+                        measures browser HTTP response time, and visualizes
+                        a conceptual route a packet could take.
+                    </p>
+
+                </div>
+
+
+                <div class="explanation-points">
+
+                    <div>
+
+                        <span>
+                            01
+                        </span>
+
+                        <strong>
+                            DNS
+                        </strong>
+
+                        <p>
+                            Converts a domain name into an IP address.
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            02
+                        </span>
+
+                        <strong>
+                            ROUTING
+                        </strong>
+
+                        <p>
+                            Networks forward packets toward their destination.
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            03
+                        </span>
+
+                        <strong>
+                            RESPONSE
+                        </strong>
+
+                        <p>
+                            The destination receives the request and responds.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="technical-note">
+
+                <span>
+                    TECHNICAL NOTE
+                </span>
+
+                <p>
+                    The destination data and HTTP measurement are real.
+                    The hop-by-hop route shown above is currently a
+                    conceptual visualization. A future backend will provide
+                    actual traceroute data.
+                </p>
+
+            </div>
+
+        </section>
+
     </main>
 
+
+    <!-- ==================== FOOTER ==================== -->
 
     <footer>
 
         <div class="footer-brand">
+
             <span>
                 PACKET // JOURNEY
             </span>
 
             <span class="footer-version">
-                v2.0.0
+                v2.1.0
             </span>
+
         </div>
+
 
         <div class="footer-info">
 
@@ -672,6 +910,7 @@
 
             <span>
                 IP data powered by
+
                 <a
                     href="https://ipapi.co/"
                     target="_blank"
@@ -679,6 +918,7 @@
                 >
                     ipapi
                 </a>
+
             </span>
 
         </div>

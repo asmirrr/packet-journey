@@ -35,7 +35,31 @@ const packetId =
     document.getElementById("packetId");
 
 
-/* DNS */
+/* ==================== QUICK RESULT ==================== */
+
+const quickResult =
+    document.getElementById("quickResult");
+
+const quickDestination =
+    document.getElementById("quickDestination");
+
+const quickStatus =
+    document.getElementById("quickStatus");
+
+const quickIp =
+    document.getElementById("quickIp");
+
+const quickLocation =
+    document.getElementById("quickLocation");
+
+const quickOrg =
+    document.getElementById("quickOrg");
+
+const quickLatency =
+    document.getElementById("quickLatency");
+
+
+/* ==================== DNS ==================== */
 
 const dnsResult =
     document.getElementById("dnsResult");
@@ -50,7 +74,7 @@ const resolvedIp =
     document.getElementById("resolvedIp");
 
 
-/* IP Intelligence */
+/* ==================== IP INTELLIGENCE ==================== */
 
 const intelligencePanel =
     document.getElementById("intelligencePanel");
@@ -80,7 +104,7 @@ const intelCoordinates =
     document.getElementById("intelCoordinates");
 
 
-/* HTTP */
+/* ==================== HTTP ==================== */
 
 const httpPanel =
     document.getElementById("httpPanel");
@@ -92,7 +116,7 @@ const httpLatency =
     document.getElementById("httpLatency");
 
 
-/* Network */
+/* ==================== NETWORK ==================== */
 
 const nodes =
     document.querySelectorAll(".network-node");
@@ -101,10 +125,8 @@ const packets =
     document.querySelectorAll(".packet");
 
 
-/*
- * Pause execution for a specified
- * amount of time.
- */
+/* ==================== HELPERS ==================== */
+
 function sleep(ms) {
 
     return new Promise(resolve => {
@@ -115,11 +137,29 @@ function sleep(ms) {
 
 
 /*
- * Perform a real DNS-over-HTTPS lookup.
+ * Normalize whatever the user enters.
  *
- * Google's public DNS resolver returns
- * JSON containing DNS records.
+ * Examples:
+ *
+ * google.com
+ * https://google.com
+ * https://google.com/
+ *
+ * all become:
+ *
+ * google.com
  */
+function normalizeDestination(value) {
+
+    return value
+        .trim()
+        .replace(/^https?:\/\//i, "")
+        .replace(/\/.*$/, "");
+}
+
+
+/* ==================== DNS ==================== */
+
 async function resolveDomain(domain) {
 
     const url =
@@ -130,7 +170,9 @@ async function resolveDomain(domain) {
 
 
     if (!response.ok) {
-        throw new Error("DNS request failed");
+        throw new Error(
+            "DNS request failed"
+        );
     }
 
 
@@ -138,22 +180,17 @@ async function resolveDomain(domain) {
         await response.json();
 
 
-    /*
-     * DNS status 0 means NOERROR.
-     *
-     * We also require an Answer section.
-     */
     if (
         data.Status !== 0 ||
         !data.Answer
     ) {
-        throw new Error("Domain not found");
+
+        throw new Error(
+            "Domain not found"
+        );
     }
 
 
-    /*
-     * DNS type 1 = IPv4 A record.
-     */
     const ipv4Record =
         data.Answer.find(
             record => record.type === 1
@@ -161,6 +198,7 @@ async function resolveDomain(domain) {
 
 
     if (!ipv4Record) {
+
         throw new Error(
             "No IPv4 address found"
         );
@@ -171,14 +209,8 @@ async function resolveDomain(domain) {
 }
 
 
-/*
- * Query ipapi for real information
- * about the resolved IP address.
- *
- * ipapi provides city, region, country,
- * latitude, longitude, timezone, ASN,
- * organization and other IP metadata.
- */
+/* ==================== IP INTELLIGENCE ==================== */
+
 async function getIpIntelligence(ip) {
 
     const url =
@@ -190,6 +222,7 @@ async function getIpIntelligence(ip) {
 
 
     if (!response.ok) {
+
         throw new Error(
             "IP intelligence request failed"
         );
@@ -201,8 +234,10 @@ async function getIpIntelligence(ip) {
 
 
     if (data.error) {
+
         throw new Error(
-            data.reason || "IP lookup failed"
+            data.reason ||
+            "IP lookup failed"
         );
     }
 
@@ -211,16 +246,8 @@ async function getIpIntelligence(ip) {
 }
 
 
-/*
- * Measure how long an HTTP request to
- * the destination takes.
- *
- * This is NOT an ICMP ping.
- *
- * It measures the browser's HTTP request
- * timing where the destination allows the
- * request.
- */
+/* ==================== HTTP ==================== */
+
 async function measureHttpLatency(domain) {
 
     const url =
@@ -233,19 +260,13 @@ async function measureHttpLatency(domain) {
 
     try {
 
-        /*
-         * no-cors allows the browser to send
-         * the request even when the destination
-         * does not expose CORS headers.
-         *
-         * The response itself is opaque, but
-         * request timing can still be measured.
-         */
         await fetch(
             url,
             {
                 method: "GET",
+
                 mode: "no-cors",
+
                 cache: "no-store"
             }
         );
@@ -266,9 +287,105 @@ async function measureHttpLatency(domain) {
 }
 
 
-/*
- * Display successful DNS resolution.
- */
+/* ==================== QUICK RESULT ==================== */
+
+function showQuickResult(domain) {
+
+    quickResult.classList.remove(
+        "hidden"
+    );
+
+
+    quickDestination.textContent =
+        domain;
+
+
+    quickStatus.textContent =
+        "RESOLVING";
+
+
+    quickStatus.className =
+        "quick-status";
+
+
+    quickIp.textContent =
+        "Resolving...";
+
+
+    quickLocation.textContent =
+        "Resolving...";
+
+
+    quickOrg.textContent =
+        "Resolving...";
+
+
+    quickLatency.textContent =
+        "Measuring...";
+}
+
+
+function updateQuickIp(ip) {
+
+    quickIp.textContent =
+        ip;
+}
+
+
+function updateQuickIntelligence(data) {
+
+    const city =
+        data.city || "Unknown";
+
+
+    const country =
+        data.country_code ||
+        data.country_name ||
+        "Unknown";
+
+
+    quickLocation.textContent =
+        `${city}, ${country}`;
+
+
+    quickOrg.textContent =
+        data.org ||
+        "Unknown";
+}
+
+
+function updateQuickLatency(value) {
+
+    if (value === null) {
+
+        quickLatency.textContent =
+            "Unavailable";
+
+        return;
+    }
+
+
+    quickLatency.textContent =
+        `${value} ms`;
+}
+
+
+function setQuickStatus(
+    text,
+    type = ""
+) {
+
+    quickStatus.textContent =
+        text;
+
+
+    quickStatus.className =
+        `quick-status ${type}`;
+}
+
+
+/* ==================== DNS UI ==================== */
+
 function showDnsSuccess(
     domain,
     ip
@@ -300,9 +417,6 @@ function showDnsSuccess(
 }
 
 
-/*
- * Display DNS failure.
- */
 function showDnsError(
     domain
 ) {
@@ -333,9 +447,8 @@ function showDnsError(
 }
 
 
-/*
- * Display IP intelligence.
- */
+/* ==================== INTELLIGENCE UI ==================== */
+
 function showIpIntelligence(data) {
 
     intelligencePanel.classList.remove(
@@ -388,17 +501,15 @@ function showIpIntelligence(data) {
 
         intelCoordinates.textContent =
             "Unavailable";
-
     }
+
+
+    updateQuickIntelligence(
+        data
+    );
 }
 
 
-/*
- * Display an IP intelligence failure.
- *
- * DNS can succeed even when the secondary
- * intelligence service is unavailable.
- */
 function showIpIntelligenceError() {
 
     intelligencePanel.classList.remove(
@@ -409,39 +520,86 @@ function showIpIntelligenceError() {
     intelIp.textContent =
         "Unavailable";
 
-
     intelOrg.textContent =
         "Unavailable";
-
 
     intelAsn.textContent =
         "Unavailable";
 
-
     intelCountry.textContent =
         "Unavailable";
-
 
     intelCity.textContent =
         "Unavailable";
 
-
     intelRegion.textContent =
         "Unavailable";
-
 
     intelTimezone.textContent =
         "Unavailable";
 
-
     intelCoordinates.textContent =
+        "Unavailable";
+
+
+    quickLocation.textContent =
+        "Unavailable";
+
+    quickOrg.textContent =
         "Unavailable";
 }
 
 
-/*
- * Reset the visualization.
- */
+/* ==================== HTTP UI ==================== */
+
+function showHttpResult(
+    result
+) {
+
+    httpPanel.classList.remove(
+        "hidden"
+    );
+
+
+    if (result === null) {
+
+        httpLatency.textContent =
+            "—";
+
+
+        httpMessage.textContent =
+            "The destination could not be measured from the browser.";
+
+
+        updateQuickLatency(
+            null
+        );
+
+
+        return;
+    }
+
+
+    httpLatency.textContent =
+        result;
+
+
+    httpMessage.textContent =
+        "Measured browser HTTP request time to the destination.";
+
+
+    latency.textContent =
+        `${result} ms`;
+
+
+    updateQuickLatency(
+        result
+    );
+}
+
+
+/* ==================== RESET ==================== */
+
 function resetNetwork() {
 
     nodes.forEach(node => {
@@ -503,52 +661,8 @@ function resetNetwork() {
 }
 
 
-/*
- * Display HTTP measurement.
- */
-function showHttpResult(
-    result
-) {
+/* ==================== ROUTE ANIMATION ==================== */
 
-    httpPanel.classList.remove(
-        "hidden"
-    );
-
-
-    if (result === null) {
-
-        httpLatency.textContent =
-            "—";
-
-
-        httpMessage.textContent =
-            "The destination could not be measured from the browser.";
-
-        return;
-    }
-
-
-    httpLatency.textContent =
-        result;
-
-
-    httpMessage.textContent =
-        "Measured browser HTTP request time to the destination.";
-
-
-    latency.textContent =
-        `${result} ms`;
-}
-
-
-/*
- * Run the simulated packet route.
- *
- * The route itself is still simulated.
- *
- * Version 3 will replace this with
- * actual traceroute information.
- */
 async function animatePacketRoute() {
 
     connectionStatus.textContent =
@@ -559,22 +673,15 @@ async function animatePacketRoute() {
         "INITIALIZING";
 
 
-    await sleep(500);
+    await sleep(400);
 
 
     /*
-     * These are intentionally not presented
-     * as real network measurements.
+     * The route remains conceptual in v2.1.
+     *
+     * These values are NOT claimed to be
+     * real network hop measurements.
      */
-    const simulatedHopTimes = [
-        2,
-        5,
-        9,
-        14,
-        21
-    ];
-
-
     for (
         let i = 0;
         i < nodes.length;
@@ -612,7 +719,8 @@ async function animatePacketRoute() {
             packetId.textContent =
                 "#" +
                 Math.floor(
-                    Math.random() * 90000 +
+                    Math.random() *
+                    90000 +
                     10000
                 );
 
@@ -621,7 +729,7 @@ async function animatePacketRoute() {
                 64 - i;
 
 
-            await sleep(1000);
+            await sleep(900);
 
 
             packet.classList.remove(
@@ -635,7 +743,7 @@ async function animatePacketRoute() {
         );
 
 
-        await sleep(300);
+        await sleep(250);
     }
 
 
@@ -653,19 +761,23 @@ async function animatePacketRoute() {
 
     connectionStatus.textContent =
         "CONNECTION ESTABLISHED";
+
+
+    setQuickStatus(
+        "COMPLETE",
+        "success"
+    );
 }
 
 
-/*
- * Main trace workflow.
- */
+/* ==================== MAIN TRACE ==================== */
+
 async function tracePacket() {
 
     const destination =
-        destinationInput.value
-            .trim()
-            .replace(/^https?:\/\//i, "")
-            .replace(/\/.*$/, "");
+        normalizeDestination(
+            destinationInput.value
+        );
 
 
     if (!destination) {
@@ -676,10 +788,6 @@ async function tracePacket() {
     }
 
 
-    /*
-     * Prevent duplicate traces while
-     * the current trace is running.
-     */
     traceButton.disabled =
         true;
 
@@ -699,6 +807,11 @@ async function tracePacket() {
         "Resolving...";
 
 
+    showQuickResult(
+        destination
+    );
+
+
     connectionStatus.textContent =
         "RESOLVING";
 
@@ -708,10 +821,11 @@ async function tracePacket() {
 
 
     /*
-     * STEP 1
-     *
-     * Real DNS resolution.
+     * ============================
+     * STEP 1 — REAL DNS
+     * ============================
      */
+
     let ip;
 
 
@@ -729,6 +843,11 @@ async function tracePacket() {
         );
 
 
+        updateQuickIp(
+            ip
+        );
+
+
         connectionStatus.textContent =
             "RESOLVED";
 
@@ -738,6 +857,28 @@ async function tracePacket() {
         showDnsError(
             destination
         );
+
+
+        setQuickStatus(
+            "DNS FAILED",
+            "error"
+        );
+
+
+        quickIp.textContent =
+            "Unresolved";
+
+
+        quickLocation.textContent =
+            "—";
+
+
+        quickOrg.textContent =
+            "—";
+
+
+        quickLatency.textContent =
+            "—";
 
 
         connectionStatus.textContent =
@@ -757,10 +898,11 @@ async function tracePacket() {
 
 
     /*
-     * STEP 2
-     *
-     * Real IP intelligence.
+     * ============================
+     * STEP 2 — IP INTELLIGENCE
+     * ============================
      */
+
     packetStatus.textContent =
         "IP INTELLIGENCE";
 
@@ -777,7 +919,6 @@ async function tracePacket() {
             data
         );
 
-
     } catch (error) {
 
         showIpIntelligenceError();
@@ -786,10 +927,11 @@ async function tracePacket() {
 
 
     /*
-     * STEP 3
-     *
-     * Measure browser HTTP request.
+     * ============================
+     * STEP 3 — HTTP
+     * ============================
      */
+
     packetStatus.textContent =
         "MEASURING HTTP";
 
@@ -819,11 +961,11 @@ async function tracePacket() {
 
 
     /*
-     * STEP 4
-     *
-     * Run the current simulated
-     * network visualization.
+     * ============================
+     * STEP 4 — VISUALIZATION
+     * ============================
      */
+
     await animatePacketRoute();
 
 
@@ -832,18 +974,14 @@ async function tracePacket() {
 }
 
 
-/*
- * Trace button.
- */
+/* ==================== EVENTS ==================== */
+
 traceButton.addEventListener(
     "click",
     tracePacket
 );
 
 
-/*
- * Press Enter to trace.
- */
 destinationInput.addEventListener(
     "keydown",
     event => {

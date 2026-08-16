@@ -1,15 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 
+/* ==================== RESET ==================== */
+
 * {
     box-sizing: border-box;
+
     margin: 0;
     padding: 0;
 }
 
 
+html {
+    scroll-behavior: smooth;
+}
+
+
 body {
     background: #08090c;
+
     color: #f1f3f5;
 
     font-family: "Inter", sans-serif;
@@ -39,14 +48,20 @@ body::before {
     background-size: 40px 40px;
 
     pointer-events: none;
+
+    z-index: -1;
 }
 
 
+/* ==================== HEADER ==================== */
+
 .topbar {
-    height: 70px;
+    height: 64px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 
     padding: 0 7%;
@@ -58,7 +73,7 @@ body::before {
 
 
 .brand {
-    font-size: 14px;
+    font-size: 13px;
 
     letter-spacing: 2px;
 
@@ -73,8 +88,10 @@ body::before {
 
 .header-right {
     display: flex;
+
     align-items: center;
-    gap: 22px;
+
+    gap: 18px;
 }
 
 
@@ -83,20 +100,21 @@ body::before {
 
     border: 1px solid #292c33;
 
-    padding: 6px 9px;
+    padding: 5px 8px;
 
-    font-size: 10px;
+    font-size: 9px;
 
     letter-spacing: 1px;
 }
 
 
 .status {
-    font-size: 11px;
+    font-size: 10px;
 
     color: #8c929d;
 
     display: flex;
+
     align-items: center;
 
     gap: 8px;
@@ -104,8 +122,8 @@ body::before {
 
 
 .status-dot {
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
 
     border-radius: 50%;
 
@@ -115,6 +133,8 @@ body::before {
 }
 
 
+/* ==================== MAIN ==================== */
+
 main {
     width: min(1100px, 86%);
 
@@ -122,8 +142,18 @@ main {
 }
 
 
+/* ==================== HERO ==================== */
+
 .hero {
-    padding: 110px 0 80px;
+    padding: 58px 0 32px;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1.15fr;
+
+    align-items: center;
+
+    gap: 50px;
 }
 
 
@@ -131,7 +161,7 @@ main {
 .section-label {
     font-family: "JetBrains Mono", monospace;
 
-    font-size: 11px;
+    font-size: 10px;
 
     letter-spacing: 2px;
 
@@ -140,13 +170,13 @@ main {
 
 
 .hero h1 {
-    font-size: clamp(48px, 7vw, 82px);
+    font-size: clamp(42px, 5vw, 62px);
 
-    line-height: 0.95;
+    line-height: 0.98;
 
-    letter-spacing: -4px;
+    letter-spacing: -3px;
 
-    margin: 20px 0;
+    margin: 13px 0 16px;
 }
 
 
@@ -158,18 +188,20 @@ main {
 .description {
     color: #8f96a3;
 
-    max-width: 560px;
+    max-width: 430px;
 
-    line-height: 1.6;
+    font-size: 13px;
 
-    margin-bottom: 35px;
+    line-height: 1.55;
 }
 
+
+/* ==================== INPUT ==================== */
 
 .trace-input {
     display: flex;
 
-    width: min(650px, 100%);
+    height: 58px;
 
     border: 1px solid #292c33;
 
@@ -187,8 +219,29 @@ main {
 }
 
 
+.input-prefix {
+    display: flex;
+
+    align-items: center;
+
+    padding: 0 13px;
+
+    color: #555b65;
+
+    font-family: "JetBrains Mono", monospace;
+
+    font-size: 8px;
+
+    letter-spacing: 1px;
+
+    border-right: 1px solid #1b1d23;
+}
+
+
 .trace-input input {
     flex: 1;
+
+    min-width: 0;
 
     border: none;
 
@@ -198,11 +251,11 @@ main {
 
     color: white;
 
-    padding: 15px;
+    padding: 0 15px;
 
     font-family: "JetBrains Mono", monospace;
 
-    font-size: 14px;
+    font-size: 13px;
 }
 
 
@@ -218,9 +271,11 @@ main {
 
     color: #08090c;
 
-    padding: 0 25px;
+    padding: 0 22px;
 
     font-family: "JetBrains Mono", monospace;
+
+    font-size: 11px;
 
     font-weight: 600;
 
@@ -242,14 +297,127 @@ main {
 }
 
 
-/* NETWORK */
+/* ==================== QUICK RESULT ==================== */
+
+.quick-result {
+    border: 1px solid #1b1d23;
+
+    background: #0d0f13;
+
+    margin: 0 0 12px;
+
+    padding: 23px 25px;
+}
+
+
+.quick-result-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 20px;
+}
+
+
+.quick-result-header h2 {
+    font-family: "JetBrains Mono", monospace;
+
+    font-size: 16px;
+
+    margin-top: 6px;
+}
+
+
+.quick-status {
+    font-family: "JetBrains Mono", monospace;
+
+    font-size: 9px;
+
+    color: #737985;
+
+    border: 1px solid #292c33;
+
+    padding: 6px 9px;
+
+    letter-spacing: 1px;
+}
+
+
+.quick-status.success {
+    color: #65ff9a;
+
+    border-color: rgba(101,255,154,0.25);
+}
+
+
+.quick-status.error {
+    color: #ff6b6b;
+
+    border-color: rgba(255,107,107,0.25);
+}
+
+
+.quick-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 8px;
+}
+
+
+.quick-item {
+    background: #08090c;
+
+    border: 1px solid #1b1d23;
+
+    padding: 15px;
+
+    min-width: 0;
+}
+
+
+.quick-item span {
+    display: block;
+
+    font-family: "JetBrains Mono", monospace;
+
+    font-size: 8px;
+
+    color: #606672;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 7px;
+}
+
+
+.quick-item strong {
+    display: block;
+
+    font-family: "JetBrains Mono", monospace;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* ==================== NETWORK ==================== */
 
 .network {
     border: 1px solid #1b1d23;
 
     background: rgba(13,15,19,0.75);
 
-    padding: 35px;
+    padding: 27px 30px;
 
     overflow: hidden;
 }
@@ -262,27 +430,36 @@ main {
 
     align-items: center;
 
-    margin-bottom: 60px;
+    margin-bottom: 42px;
 }
 
 
 .network-header h2 {
-    font-size: 24px;
+    font-size: 20px;
 
-    margin-top: 8px;
+    margin-top: 6px;
 }
 
 
 .connection-status {
     font-family: "JetBrains Mono", monospace;
 
-    font-size: 11px;
+    font-size: 9px;
 
     color: #737985;
 
-    padding: 8px 12px;
+    padding: 7px 10px;
 
     border: 1px solid #292c33;
+}
+
+
+.network-scroll {
+    width: 100%;
+
+    overflow-x: auto;
+
+    padding-bottom: 8px;
 }
 
 
@@ -323,8 +500,8 @@ main {
 
 
 .node-icon {
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
 
     border: 1px solid #3b4049;
 
@@ -336,9 +513,9 @@ main {
 
     border-radius: 50%;
 
-    font-size: 14px;
+    font-size: 13px;
 
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 
     transition: 0.3s;
 }
@@ -376,7 +553,7 @@ main {
 .node-info strong {
     display: block;
 
-    font-size: 12px;
+    font-size: 11px;
 
     white-space: nowrap;
 }
@@ -389,7 +566,7 @@ main {
 
     font-family: "JetBrains Mono", monospace;
 
-    font-size: 9px;
+    font-size: 8px;
 
     margin-top: 5px;
 
@@ -456,19 +633,18 @@ main {
 }
 
 
-/* SHARED PANELS */
+/* ==================== PANELS ==================== */
 
 .hidden {
     display: none !important;
 }
 
 
-/* DNS */
-
 .info-panel {
     display: grid;
 
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns:
+        auto 1fr auto;
 
     align-items: center;
 
@@ -476,7 +652,7 @@ main {
 
     margin: 12px 0;
 
-    padding: 22px 25px;
+    padding: 20px 23px;
 
     border: 1px solid #1b1d23;
 
@@ -485,8 +661,8 @@ main {
 
 
 .result-icon {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
 
     border: 1px solid #65ff9a;
 
@@ -517,18 +693,18 @@ main {
 
 
 .result-main h3 {
-    font-size: 14px;
+    font-size: 13px;
 
-    margin-top: 7px;
+    margin-top: 6px;
 }
 
 
 .result-main p {
     color: #666d78;
 
-    font-size: 11px;
+    font-size: 10px;
 
-    margin-top: 5px;
+    margin-top: 4px;
 }
 
 
@@ -548,18 +724,18 @@ main {
 
     letter-spacing: 1px;
 
-    margin-bottom: 6px;
+    margin-bottom: 5px;
 }
 
 
 .result-value strong {
     font-family: "JetBrains Mono", monospace;
 
-    font-size: 13px;
+    font-size: 12px;
 }
 
 
-/* INTELLIGENCE */
+/* ==================== INTELLIGENCE ==================== */
 
 .intelligence {
     border: 1px solid #1b1d23;
@@ -568,7 +744,7 @@ main {
 
     margin: 12px 0;
 
-    padding: 30px;
+    padding: 27px;
 }
 
 
@@ -579,21 +755,21 @@ main {
 
     justify-content: space-between;
 
-    margin-bottom: 25px;
+    margin-bottom: 22px;
 }
 
 
 .panel-heading h2 {
-    font-size: 20px;
+    font-size: 18px;
 
-    margin-top: 7px;
+    margin-top: 6px;
 }
 
 
 .real-badge {
     font-family: "JetBrains Mono", monospace;
 
-    font-size: 9px;
+    font-size: 8px;
 
     letter-spacing: 1px;
 
@@ -601,16 +777,17 @@ main {
 
     border: 1px solid rgba(101,255,154,0.25);
 
-    padding: 7px 9px;
+    padding: 6px 8px;
 }
 
 
 .intelligence-grid {
     display: grid;
 
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns:
+        repeat(4, 1fr);
 
-    gap: 10px;
+    gap: 8px;
 }
 
 
@@ -619,7 +796,7 @@ main {
 
     border: 1px solid #1b1d23;
 
-    padding: 18px;
+    padding: 16px;
 
     min-width: 0;
 }
@@ -636,7 +813,7 @@ main {
 
     letter-spacing: 1px;
 
-    margin-bottom: 9px;
+    margin-bottom: 8px;
 }
 
 
@@ -645,7 +822,7 @@ main {
 
     font-family: "JetBrains Mono", monospace;
 
-    font-size: 11px;
+    font-size: 10px;
 
     white-space: nowrap;
 
@@ -655,7 +832,7 @@ main {
 }
 
 
-/* HTTP */
+/* ==================== HTTP ==================== */
 
 .http-panel {
     display: flex;
@@ -668,25 +845,25 @@ main {
 
     background: #0d0f13;
 
-    padding: 25px 30px;
+    padding: 22px 27px;
 
     margin: 12px 0;
 }
 
 
 .http-left h2 {
-    font-size: 18px;
+    font-size: 17px;
 
-    margin-top: 7px;
+    margin-top: 6px;
 }
 
 
 .http-left p:last-child {
     color: #666d78;
 
-    font-size: 11px;
+    font-size: 10px;
 
-    margin-top: 6px;
+    margin-top: 5px;
 }
 
 
@@ -695,14 +872,14 @@ main {
 
     align-items: baseline;
 
-    gap: 7px;
+    gap: 6px;
 }
 
 
 .http-value strong {
     font-family: "JetBrains Mono", monospace;
 
-    font-size: 32px;
+    font-size: 30px;
 }
 
 
@@ -711,18 +888,19 @@ main {
 
     color: #606672;
 
-    font-size: 11px;
+    font-size: 10px;
 }
 
 
-/* STATISTICS */
+/* ==================== DASHBOARD ==================== */
 
 .dashboard {
     display: grid;
 
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns:
+        repeat(4, 1fr);
 
-    gap: 12px;
+    gap: 10px;
 
     margin: 12px 0;
 }
@@ -733,7 +911,7 @@ main {
 
     border: 1px solid #1b1d23;
 
-    padding: 25px;
+    padding: 20px;
 }
 
 
@@ -744,31 +922,33 @@ main {
 
     color: #606672;
 
-    font-size: 9px;
+    font-size: 8px;
 
     letter-spacing: 1px;
 
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 
 .stat-card strong {
     font-family: "JetBrains Mono", monospace;
 
-    font-size: 20px;
+    font-size: 17px;
 }
 
 
-/* PACKET DETAILS */
+/* ==================== PACKET DETAILS ==================== */
 
 .details {
     border: 1px solid #1b1d23;
 
     background: #0d0f13;
 
-    padding: 30px;
+    padding: 27px;
 
-    margin-bottom: 80px;
+    margin-top: 12px;
+
+    margin-bottom: 60px;
 }
 
 
@@ -777,14 +957,14 @@ main {
 
     justify-content: space-between;
 
-    margin-bottom: 25px;
+    margin-bottom: 22px;
 }
 
 
 .details-header span {
     font-family: "JetBrains Mono", monospace;
 
-    font-size: 10px;
+    font-size: 9px;
 
     color: #606672;
 }
@@ -793,7 +973,8 @@ main {
 .details-grid {
     display: grid;
 
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns:
+        repeat(4, 1fr);
 
     gap: 20px;
 }
@@ -806,29 +987,167 @@ main {
 
     font-family: "JetBrains Mono", monospace;
 
-    font-size: 9px;
+    font-size: 8px;
 
-    margin-bottom: 8px;
+    margin-bottom: 7px;
 }
 
 
 .details-grid strong {
     font-family: "JetBrains Mono", monospace;
 
-    font-size: 12px;
+    font-size: 11px;
 }
 
 
-/* FOOTER */
+/* ==================== EXPLANATION ==================== */
+
+.explanation {
+    border-top: 1px solid #1b1d23;
+
+    padding: 60px 0 70px;
+}
+
+
+.explanation-heading h2 {
+    font-size: 28px;
+
+    letter-spacing: -1px;
+
+    margin-top: 8px;
+}
+
+
+.explanation-content {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 60px;
+
+    margin-top: 30px;
+}
+
+
+.explanation-main {
+    max-width: 510px;
+}
+
+
+.explanation-main p {
+    color: #858c98;
+
+    font-size: 13px;
+
+    line-height: 1.7;
+
+    margin-bottom: 18px;
+}
+
+
+.explanation-points {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+}
+
+
+.explanation-points > div {
+    display: grid;
+
+    grid-template-columns:
+        30px 100px 1fr;
+
+    align-items: start;
+
+    gap: 10px;
+
+    padding-bottom: 18px;
+
+    border-bottom: 1px solid #17191e;
+}
+
+
+.explanation-points span {
+    font-family: "JetBrains Mono", monospace;
+
+    color: #555b65;
+
+    font-size: 9px;
+}
+
+
+.explanation-points strong {
+    font-family: "JetBrains Mono", monospace;
+
+    font-size: 10px;
+
+    letter-spacing: 1px;
+}
+
+
+.explanation-points p {
+    color: #686f7a;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+
+.technical-note {
+    display: grid;
+
+    grid-template-columns:
+        130px 1fr;
+
+    gap: 20px;
+
+    border: 1px solid #1b1d23;
+
+    background: #0d0f13;
+
+    padding: 18px 20px;
+
+    margin-top: 35px;
+}
+
+
+.technical-note span {
+    font-family: "JetBrains Mono", monospace;
+
+    color: #737985;
+
+    font-size: 8px;
+
+    letter-spacing: 1px;
+}
+
+
+.technical-note p {
+    color: #666d78;
+
+    font-family: "JetBrains Mono", monospace;
+
+    font-size: 9px;
+
+    line-height: 1.6;
+}
+
+
+/* ==================== FOOTER ==================== */
 
 footer {
     border-top: 1px solid #1b1d23;
 
-    padding: 30px 7%;
+    padding: 28px 7%;
 
     font-family: "JetBrains Mono", monospace;
 
-    font-size: 10px;
+    font-size: 9px;
 
     color: #555b65;
 
@@ -874,49 +1193,159 @@ footer a:hover {
 }
 
 
-/* RESPONSIVE */
+/* ==================== RESPONSIVE ==================== */
 
 @media (max-width: 900px) {
 
+    .hero {
+        grid-template-columns: 1fr;
+
+        gap: 25px;
+
+        padding-top: 50px;
+    }
+
+
+    .description {
+        max-width: 600px;
+    }
+
+
     .intelligence-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns:
+            repeat(2, 1fr);
     }
 
 }
 
 
-@media (max-width: 800px) {
+@media (max-width: 750px) {
 
-    .hero {
-        padding-top: 70px;
+    .quick-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
     }
 
-    .network {
-        overflow-x: auto;
-    }
 
     .dashboard {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns:
+            repeat(2, 1fr);
     }
 
+
     .details-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .explanation-content {
+        grid-template-columns: 1fr;
+
+        gap: 35px;
     }
 
 }
 
 
-@media (max-width: 650px) {
+@media (max-width: 600px) {
+
+    .topbar {
+        padding: 0 5%;
+    }
+
+
+    .status {
+        display: none;
+    }
+
+
+    main {
+        width: 90%;
+    }
+
+
+    .hero {
+        padding-top: 42px;
+    }
+
+
+    .hero h1 {
+        font-size: 43px;
+
+        letter-spacing: -2px;
+    }
+
+
+    .trace-input {
+        height: auto;
+
+        flex-wrap: wrap;
+
+        padding: 5px;
+    }
+
+
+    .input-prefix {
+        display: none;
+    }
+
+
+    .trace-input input {
+        height: 46px;
+
+        width: 100%;
+    }
+
+
+    .trace-input button {
+        height: 42px;
+
+        width: 100%;
+    }
+
+
+    .quick-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .quick-result {
+        padding: 20px;
+    }
+
+
+    .quick-result-header {
+        align-items: flex-start;
+
+        gap: 15px;
+
+        flex-direction: column;
+    }
+
+
+    .network {
+        padding: 22px;
+    }
+
 
     .info-panel {
-        grid-template-columns: auto 1fr;
+        grid-template-columns:
+            auto 1fr;
     }
+
 
     .result-value {
         grid-column: 2;
 
         text-align: left;
     }
+
+
+    .intelligence-grid {
+        grid-template-columns: 1fr;
+    }
+
 
     .http-panel {
         align-items: flex-start;
@@ -926,17 +1355,48 @@ footer a:hover {
         gap: 20px;
     }
 
-    .header-right {
+
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+
+    .details-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+
+    .explanation {
+        padding-top: 45px;
+    }
+
+
+    .explanation-heading h2 {
+        font-size: 24px;
+    }
+
+
+    .explanation-points > div {
+        grid-template-columns:
+            30px 80px 1fr;
+    }
+
+
+    .technical-note {
+        grid-template-columns: 1fr;
+
         gap: 10px;
     }
 
-    .status {
-        display: none;
-    }
 
     footer {
         flex-direction: column;
+
+        padding-left: 5%;
+
+        padding-right: 5%;
     }
+
 
     .footer-info {
         justify-content: flex-start;
@@ -945,28 +1405,10 @@ footer a:hover {
 }
 
 
-@media (max-width: 500px) {
+@media (max-width: 400px) {
 
-    .trace-input {
-        flex-direction: column;
-    }
-
-    .trace-input button {
-        height: 45px;
-    }
-
-    .dashboard {
+    .details-grid {
         grid-template-columns: 1fr;
-    }
-
-    .intelligence-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .panel-heading {
-        flex-direction: column;
-
-        gap: 15px;
     }
 
 }
