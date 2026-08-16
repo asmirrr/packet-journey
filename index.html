@@ -6,927 +6,1067 @@
 
     <title>Packet Journey</title>
 
+    <!-- Fonts -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Leaflet -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIINfQ3hY5y8gQ0z5j9xY4v8f1y8m0v2rM="
+        crossorigin=""
+    >
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <header class="topbar">
+<header class="topbar">
 
-        <div class="brand">
-            <span class="brand-symbol">◈</span>
-            PACKET // JOURNEY
+    <div class="brand">
+        <span class="brand-symbol">◈</span>
+        PACKET // JOURNEY
+    </div>
+
+    <div class="header-right">
+
+        <span class="version">
+            v2.3.0
+        </span>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            SYSTEM ONLINE
         </div>
 
-        <div class="header-right">
+    </div>
 
-            <span class="version">
-                v2.2.0
-            </span>
+</header>
 
-            <div class="status">
-                <span class="status-dot"></span>
-                SYSTEM ONLINE
+
+<main>
+
+    <!-- ==================== HERO ==================== -->
+
+    <section class="hero">
+
+        <div class="hero-copy">
+
+            <p class="eyebrow">
+                NETWORK VISUALIZATION
+            </p>
+
+            <h1>
+                See where your<br>
+                <span>packet goes.</span>
+            </h1>
+
+            <p class="description">
+                Explore the network identity, geographic location,
+                and response characteristics of any internet destination.
+            </p>
+
+        </div>
+
+
+        <div class="hero-action">
+
+            <div class="trace-input">
+
+                <div class="input-prefix">
+                    DESTINATION
+                </div>
+
+                <input
+                    id="destination"
+                    type="text"
+                    placeholder="google.com"
+                    value="google.com"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+
+                <button id="traceButton">
+                    TRACE →
+                </button>
+
+            </div>
+
+            <div class="input-hint">
+                Press Enter to trace
             </div>
 
         </div>
 
-    </header>
+    </section>
 
 
-    <main>
+    <!-- ==================== QUICK RESULT ==================== -->
 
-        <!-- ==================== HERO ==================== -->
+    <section
+        id="quickResult"
+        class="quick-result hidden"
+    >
 
-        <section class="hero">
-
-            <div class="hero-copy">
-
-                <p class="eyebrow">
-                    NETWORK VISUALIZATION
-                </p>
-
-                <h1>
-                    See where your<br>
-                    <span>packet goes.</span>
-                </h1>
-
-                <p class="description">
-                    Explore the network identity, geographic location,
-                    and response characteristics of any internet destination.
-                </p>
-
-            </div>
-
+        <div class="quick-result-header">
 
             <div>
 
-                <div class="trace-input">
-
-                    <div class="input-prefix">
-                        DESTINATION
-                    </div>
-
-                    <input
-                        id="destination"
-                        type="text"
-                        placeholder="google.com"
-                        value="google.com"
-                        autocomplete="off"
-                        spellcheck="false"
-                    >
-
-                    <button id="traceButton">
-                        TRACE →
-                    </button>
-
-                </div>
-
-                <div class="input-hint">
-                    Press Enter to trace
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ==================== QUICK RESULT ==================== -->
-
-        <section
-            id="quickResult"
-            class="quick-result hidden"
-        >
-
-            <div class="quick-result-header">
-
-                <div>
-
-                    <p class="section-label">
-                        DESTINATION SUMMARY
-                    </p>
-
-                    <h2 id="quickDestination">
-                        google.com
-                    </h2>
-
-                </div>
-
-                <div
-                    id="quickStatus"
-                    class="quick-status"
-                >
-                    WAITING
-                </div>
-
-            </div>
-
-
-            <div class="quick-grid">
-
-                <div class="quick-item">
-
-                    <span>
-                        IP ADDRESS
-                    </span>
-
-                    <strong id="quickIp">
-                        —
-                    </strong>
-
-                </div>
-
-
-                <div class="quick-item">
-
-                    <span>
-                        LOCATION
-                    </span>
-
-                    <strong id="quickLocation">
-                        —
-                    </strong>
-
-                </div>
-
-
-                <div class="quick-item">
-
-                    <span>
-                        ORGANIZATION
-                    </span>
-
-                    <strong id="quickOrg">
-                        —
-                    </strong>
-
-                </div>
-
-
-                <div class="quick-item">
-
-                    <span>
-                        HTTP RESPONSE
-                    </span>
-
-                    <strong id="quickLatency">
-                        —
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <div class="measurement-note">
-
-                <span class="live-dot"></span>
-
-                Real DNS, IP geolocation, and browser HTTP data
-
-            </div>
-
-        </section>
-
-
-        <!-- ==================== NETWORK ==================== -->
-
-        <section class="network">
-
-            <div class="network-header">
-
-                <div>
-
-                    <p class="section-label">
-                        LIVE TRACE
-                    </p>
-
-                    <h2>
-                        Packet Route
-                    </h2>
-
-                </div>
-
-                <div
-                    id="connectionStatus"
-                    class="connection-status"
-                >
-                    READY
-                </div>
-
-            </div>
-
-
-            <div class="network-scroll">
-
-                <div class="network-map">
-
-                    <div
-                        class="network-node"
-                        data-node="device"
-                    >
-
-                        <div class="node-icon">
-                            ◉
-                        </div>
-
-                        <div class="node-info">
-
-                            <span class="node-type">
-                                LOCAL
-                            </span>
-
-                            <strong>
-                                Your Device
-                            </strong>
-
-                            <small>
-                                Local Host
-                            </small>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="connection">
-                        <div class="packet"></div>
-                    </div>
-
-
-                    <div
-                        class="network-node"
-                        data-node="router"
-                    >
-
-                        <div class="node-icon">
-                            ◉
-                        </div>
-
-                        <div class="node-info">
-
-                            <span class="node-type">
-                                NETWORK
-                            </span>
-
-                            <strong>
-                                Router
-                            </strong>
-
-                            <small>
-                                Gateway
-                            </small>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="connection">
-                        <div class="packet"></div>
-                    </div>
-
-
-                    <div
-                        class="network-node"
-                        data-node="isp"
-                    >
-
-                        <div class="node-icon">
-                            ◉
-                        </div>
-
-                        <div class="node-info">
-
-                            <span class="node-type">
-                                ISP
-                            </span>
-
-                            <strong>
-                                Internet Provider
-                            </strong>
-
-                            <small>
-                                Upstream
-                            </small>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="connection">
-                        <div class="packet"></div>
-                    </div>
-
-
-                    <div
-                        class="network-node"
-                        data-node="dns"
-                    >
-
-                        <div class="node-icon">
-                            ◉
-                        </div>
-
-                        <div class="node-info">
-
-                            <span class="node-type">
-                                DNS
-                            </span>
-
-                            <strong>
-                                DNS Server
-                            </strong>
-
-                            <small>
-                                Resolver
-                            </small>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="connection">
-                        <div class="packet"></div>
-                    </div>
-
-
-                    <div
-                        class="network-node"
-                        data-node="internet"
-                    >
-
-                        <div class="node-icon">
-                            ◉
-                        </div>
-
-                        <div class="node-info">
-
-                            <span class="node-type">
-                                WAN
-                            </span>
-
-                            <strong>
-                                Internet
-                            </strong>
-
-                            <small>
-                                Global Network
-                            </small>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="connection">
-                        <div class="packet"></div>
-                    </div>
-
-
-                    <div
-                        class="network-node target"
-                        data-node="target"
-                    >
-
-                        <div class="node-icon">
-                            ◉
-                        </div>
-
-                        <div class="node-info">
-
-                            <span class="node-type">
-                                TARGET
-                            </span>
-
-                            <strong id="targetName">
-                                google.com
-                            </strong>
-
-                            <small id="targetIp">
-                                Destination
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="route-disclaimer">
-
-                <span>
-                    VISUALIZATION
-                </span>
-
-                <p>
-                    The route above is a conceptual representation of
-                    network traversal. The DNS resolution and destination
-                    measurements below are real.
-                </p>
-
-            </div>
-
-        </section>
-
-
-        <!-- ==================== DNS ==================== -->
-
-        <section
-            id="dnsResult"
-            class="info-panel hidden"
-        >
-
-            <div class="result-icon">
-                ✓
-            </div>
-
-            <div class="result-main">
-
-                <span class="section-label">
-                    DNS RESOLUTION
-                </span>
-
-                <h3 id="dnsTitle">
-                    Domain resolved
-                </h3>
-
-                <p id="dnsMessage">
-                    Destination successfully resolved.
-                </p>
-
-            </div>
-
-            <div class="result-value">
-
-                <span>
-                    IP ADDRESS
-                </span>
-
-                <strong id="resolvedIp">
-                    —
-                </strong>
-
-            </div>
-
-        </section>
-
-
-        <!-- ==================== DESTINATION INTELLIGENCE ==================== -->
-
-        <section
-            id="intelligencePanel"
-            class="intelligence hidden"
-        >
-
-            <div class="panel-heading">
-
-                <div>
-
-                    <p class="section-label">
-                        DESTINATION INTELLIGENCE
-                    </p>
-
-                    <h2>
-                        Network Identity
-                    </h2>
-
-                </div>
-
-                <span class="real-badge">
-                    ● LIVE DATA
-                </span>
-
-            </div>
-
-
-            <div class="intelligence-grid">
-
-                <div class="intel-card">
-                    <span>IP ADDRESS</span>
-                    <strong id="intelIp">—</strong>
-                </div>
-
-                <div class="intel-card">
-                    <span>ORGANIZATION</span>
-                    <strong id="intelOrg">—</strong>
-                </div>
-
-                <div class="intel-card">
-                    <span>ASN</span>
-                    <strong id="intelAsn">—</strong>
-                </div>
-
-                <div class="intel-card">
-                    <span>COUNTRY</span>
-                    <strong id="intelCountry">—</strong>
-                </div>
-
-                <div class="intel-card">
-                    <span>CITY</span>
-                    <strong id="intelCity">—</strong>
-                </div>
-
-                <div class="intel-card">
-                    <span>REGION</span>
-                    <strong id="intelRegion">—</strong>
-                </div>
-
-                <div class="intel-card">
-                    <span>TIMEZONE</span>
-                    <strong id="intelTimezone">—</strong>
-                </div>
-
-                <div class="intel-card">
-                    <span>COORDINATES</span>
-                    <strong id="intelCoordinates">—</strong>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ==================== LOCATION ==================== -->
-
-        <section
-            id="locationPanel"
-            class="location-panel hidden"
-        >
-
-            <div class="location-header">
-
-                <div>
-
-                    <p class="section-label">
-                        GEOGRAPHIC DESTINATION
-                    </p>
-
-                    <h2>
-                        Where is the server?
-                    </h2>
-
-                </div>
-
-                <span class="real-badge">
-                    ● IP GEOLOCATION
-                </span>
-
-            </div>
-
-
-            <div class="location-content">
-
-                <div class="location-map">
-
-                    <div class="map-grid"></div>
-
-                    <div class="map-crosshair"></div>
-
-                    <div
-                        id="mapMarker"
-                        class="map-marker"
-                    >
-                        <span></span>
-                    </div>
-
-                    <div class="map-label">
-
-                        <span>
-                            DESTINATION
-                        </span>
-
-                        <strong id="mapLocation">
-                            —
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <div class="location-details">
-
-                    <div class="location-coordinate">
-
-                        <span>
-                            LATITUDE
-                        </span>
-
-                        <strong id="mapLatitude">
-                            —
-                        </strong>
-
-                    </div>
-
-
-                    <div class="location-coordinate">
-
-                        <span>
-                            LONGITUDE
-                        </span>
-
-                        <strong id="mapLongitude">
-                            —
-                        </strong>
-
-                    </div>
-
-
-                    <div class="location-coordinate">
-
-                        <span>
-                            TIMEZONE
-                        </span>
-
-                        <strong id="mapTimezone">
-                            —
-                        </strong>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ==================== HTTP ==================== -->
-
-        <section
-            id="httpPanel"
-            class="http-panel hidden"
-        >
-
-            <div class="http-left">
-
                 <p class="section-label">
-                    HTTP MEASUREMENT
+                    DESTINATION SUMMARY
                 </p>
 
-                <h2>
-                    Destination Response
-                </h2>
-
-                <p id="httpMessage">
-                    Measuring response time...
-                </p>
-
-            </div>
-
-
-            <div class="http-value">
-
-                <strong id="httpLatency">
-                    —
-                </strong>
-
-                <span>
-                    ms
-                </span>
-
-            </div>
-
-        </section>
-
-
-        <!-- ==================== STATISTICS ==================== -->
-
-        <section class="dashboard">
-
-            <div class="stat-card">
-                <span>PACKETS</span>
-                <strong id="packetCount">0 / 32</strong>
-            </div>
-
-            <div class="stat-card">
-                <span>HOPS</span>
-                <strong id="hopCount">0</strong>
-            </div>
-
-            <div class="stat-card">
-                <span>HTTP</span>
-                <strong id="latency">— ms</strong>
-            </div>
-
-            <div class="stat-card">
-                <span>PROTOCOL</span>
-                <strong>TCP/IP</strong>
-            </div>
-
-        </section>
-
-
-        <!-- ==================== PACKET INSPECTOR ==================== -->
-
-        <section class="details">
-
-            <div class="details-header">
-
-                <p class="section-label">
-                    PACKET INSPECTOR
-                </p>
-
-                <span id="packetStatus">
-                    WAITING
-                </span>
-
-            </div>
-
-
-            <div class="details-grid">
-
-                <div>
-                    <span>SOURCE</span>
-                    <strong>LOCAL HOST</strong>
-                </div>
-
-                <div>
-                    <span>DESTINATION</span>
-                    <strong id="detailDestination">
-                        google.com
-                    </strong>
-                </div>
-
-                <div>
-                    <span>TTL</span>
-                    <strong id="ttl">64</strong>
-                </div>
-
-                <div>
-                    <span>PACKET ID</span>
-                    <strong id="packetId">—</strong>
-                </div>
-
-                <div>
-                    <span>TRACE START</span>
-                    <strong id="traceTimestamp">—</strong>
-                </div>
-
-                <div>
-                    <span>DATA SOURCE</span>
-                    <strong>LIVE LOOKUPS</strong>
-                </div>
-
-                <div>
-                    <span>VISUAL ROUTE</span>
-                    <strong>CONCEPTUAL</strong>
-                </div>
-
-                <div>
-                    <span>VERSION</span>
-                    <strong>2.2.0</strong>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ==================== EXPLANATION ==================== -->
-
-        <section class="explanation">
-
-            <div class="explanation-heading">
-
-                <p class="section-label">
-                    ABOUT THE PROJECT
-                </p>
-
-                <h2>
-                    What is Packet Journey?
+                <h2 id="quickDestination">
+                    google.com
                 </h2>
 
             </div>
 
-
-            <div class="explanation-content">
-
-                <div class="explanation-main">
-
-                    <p>
-                        When you connect to a website, your request doesn't
-                        simply travel directly from your computer to a server.
-                        It passes through multiple systems that help move
-                        information across the internet.
-                    </p>
-
-                    <p>
-                        Packet Journey visualizes that process. Enter a
-                        destination and the application resolves its domain,
-                        identifies the destination's network information,
-                        locates the destination geographically, measures
-                        browser HTTP response time, and visualizes a
-                        conceptual route a packet could take.
-                    </p>
-
-                </div>
-
-
-                <div class="explanation-points">
-
-                    <div>
-                        <span>01</span>
-                        <strong>DNS</strong>
-                        <p>
-                            Converts a domain name into an IP address.
-                        </p>
-                    </div>
-
-                    <div>
-                        <span>02</span>
-                        <strong>ROUTING</strong>
-                        <p>
-                            Networks forward packets toward their destination.
-                        </p>
-                    </div>
-
-                    <div>
-                        <span>03</span>
-                        <strong>GEOLOCATION</strong>
-                        <p>
-                            Maps an IP address to an approximate geographic
-                            destination.
-                        </p>
-                    </div>
-
-                    <div>
-                        <span>04</span>
-                        <strong>RESPONSE</strong>
-                        <p>
-                            The destination receives the request and responds.
-                        </p>
-                    </div>
-
-                </div>
-
+            <div
+                id="quickStatus"
+                class="quick-status"
+            >
+                WAITING
             </div>
 
+        </div>
 
-            <div class="technical-note">
 
-                <span>
-                    TECHNICAL NOTE
-                </span>
+        <div class="quick-grid">
 
-                <p>
-                    DNS resolution, IP intelligence, geographic coordinates,
-                    and HTTP measurements use live data. The hop-by-hop route
-                    remains a conceptual visualization in v2.2. Actual
-                    traceroute data is planned for a future backend release.
+            <div class="quick-item">
+                <span>IP ADDRESS</span>
+                <strong id="quickIp">—</strong>
+            </div>
+
+            <div class="quick-item">
+                <span>LOCATION</span>
+                <strong id="quickLocation">—</strong>
+            </div>
+
+            <div class="quick-item">
+                <span>ORGANIZATION</span>
+                <strong id="quickOrg">—</strong>
+            </div>
+
+            <div class="quick-item">
+                <span>HTTP RESPONSE</span>
+                <strong id="quickLatency">—</strong>
+            </div>
+
+        </div>
+
+
+        <div class="measurement-note">
+
+            <span class="live-dot"></span>
+
+            Real DNS, IP geolocation, and browser HTTP data
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== NETWORK ==================== -->
+
+    <section class="network">
+
+        <div class="network-header">
+
+            <div>
+
+                <p class="section-label">
+                    LIVE TRACE
                 </p>
 
+                <h2>
+                    Packet Route
+                </h2>
+
             </div>
 
-        </section>
+            <div
+                id="connectionStatus"
+                class="connection-status"
+            >
+                READY
+            </div>
 
-    </main>
+        </div>
 
 
-    <footer>
+        <div class="network-scroll">
 
-        <div class="footer-brand">
+            <div class="network-map">
+
+                <div
+                    class="network-node"
+                    data-node="device"
+                >
+
+                    <div class="node-icon">
+                        ◉
+                    </div>
+
+                    <div class="node-info">
+
+                        <span class="node-type">
+                            LOCAL
+                        </span>
+
+                        <strong>
+                            Your Device
+                        </strong>
+
+                        <small>
+                            Local Host
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="connection">
+                    <div class="packet"></div>
+                </div>
+
+
+                <div
+                    class="network-node"
+                    data-node="router"
+                >
+
+                    <div class="node-icon">
+                        ◉
+                    </div>
+
+                    <div class="node-info">
+
+                        <span class="node-type">
+                            NETWORK
+                        </span>
+
+                        <strong>
+                            Router
+                        </strong>
+
+                        <small>
+                            Gateway
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="connection">
+                    <div class="packet"></div>
+                </div>
+
+
+                <div
+                    class="network-node"
+                    data-node="isp"
+                >
+
+                    <div class="node-icon">
+                        ◉
+                    </div>
+
+                    <div class="node-info">
+
+                        <span class="node-type">
+                            ISP
+                        </span>
+
+                        <strong>
+                            Internet Provider
+                        </strong>
+
+                        <small>
+                            Upstream
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="connection">
+                    <div class="packet"></div>
+                </div>
+
+
+                <div
+                    class="network-node"
+                    data-node="dns"
+                >
+
+                    <div class="node-icon">
+                        ◉
+                    </div>
+
+                    <div class="node-info">
+
+                        <span class="node-type">
+                            DNS
+                        </span>
+
+                        <strong>
+                            DNS Server
+                        </strong>
+
+                        <small>
+                            Resolver
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="connection">
+                    <div class="packet"></div>
+                </div>
+
+
+                <div
+                    class="network-node"
+                    data-node="internet"
+                >
+
+                    <div class="node-icon">
+                        ◉
+                    </div>
+
+                    <div class="node-info">
+
+                        <span class="node-type">
+                            WAN
+                        </span>
+
+                        <strong>
+                            Internet
+                        </strong>
+
+                        <small>
+                            Global Network
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="connection">
+                    <div class="packet"></div>
+                </div>
+
+
+                <div
+                    class="network-node target"
+                    data-node="target"
+                >
+
+                    <div class="node-icon">
+                        ◉
+                    </div>
+
+                    <div class="node-info">
+
+                        <span class="node-type">
+                            TARGET
+                        </span>
+
+                        <strong id="targetName">
+                            google.com
+                        </strong>
+
+                        <small id="targetIp">
+                            Destination
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="route-disclaimer">
 
             <span>
-                PACKET // JOURNEY
+                VISUALIZATION
             </span>
 
-            <span class="footer-version">
-                v2.2.0
+            <p>
+                The route above is a conceptual representation of
+                network traversal. The DNS resolution and destination
+                measurements below are real.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== DNS ==================== -->
+
+    <section
+        id="dnsResult"
+        class="info-panel hidden"
+    >
+
+        <div class="result-icon">
+            ✓
+        </div>
+
+        <div class="result-main">
+
+            <span class="section-label">
+                DNS RESOLUTION
+            </span>
+
+            <h3 id="dnsTitle">
+                Domain resolved
+            </h3>
+
+            <p id="dnsMessage">
+                Destination successfully resolved.
+            </p>
+
+        </div>
+
+        <div class="result-value">
+
+            <span>
+                IP ADDRESS
+            </span>
+
+            <strong id="resolvedIp">
+                —
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== DESTINATION INTELLIGENCE ==================== -->
+
+    <section
+        id="intelligencePanel"
+        class="intelligence hidden"
+    >
+
+        <div class="panel-heading">
+
+            <div>
+
+                <p class="section-label">
+                    DESTINATION INTELLIGENCE
+                </p>
+
+                <h2>
+                    Network Identity
+                </h2>
+
+            </div>
+
+            <span class="real-badge">
+                ● LIVE DATA
             </span>
 
         </div>
 
 
-        <div class="footer-info">
+        <div class="intelligence-grid">
 
-            <span>
-                Network visualization experiment
-            </span>
+            <div class="intel-card">
+                <span>IP ADDRESS</span>
+                <strong id="intelIp">—</strong>
+            </div>
 
-            <span>
-                IP data powered by
-                <a
-                    href="https://ipapi.co/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    ipapi
-                </a>
+            <div class="intel-card">
+                <span>ORGANIZATION</span>
+                <strong id="intelOrg">—</strong>
+            </div>
+
+            <div class="intel-card">
+                <span>ASN</span>
+                <strong id="intelAsn">—</strong>
+            </div>
+
+            <div class="intel-card">
+                <span>COUNTRY</span>
+                <strong id="intelCountry">—</strong>
+            </div>
+
+            <div class="intel-card">
+                <span>CITY</span>
+                <strong id="intelCity">—</strong>
+            </div>
+
+            <div class="intel-card">
+                <span>REGION</span>
+                <strong id="intelRegion">—</strong>
+            </div>
+
+            <div class="intel-card">
+                <span>TIMEZONE</span>
+                <strong id="intelTimezone">—</strong>
+            </div>
+
+            <div class="intel-card">
+                <span>COORDINATES</span>
+                <strong id="intelCoordinates">—</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== GEOGRAPHIC MAP ==================== -->
+
+    <section
+        id="locationPanel"
+        class="location-panel hidden"
+    >
+
+        <div class="location-header">
+
+            <div>
+
+                <p class="section-label">
+                    GEOGRAPHIC DESTINATION
+                </p>
+
+                <h2>
+                    Where is the server?
+                </h2>
+
+            </div>
+
+            <span class="real-badge">
+                ● IP GEOLOCATION
             </span>
 
         </div>
 
-    </footer>
+
+        <div class="location-content">
+
+            <div class="map-wrapper">
+
+                <div
+                    id="packetMap"
+                    class="packet-map"
+                ></div>
+
+                <div class="map-overlay">
+
+                    <div class="map-overlay-item">
+
+                        <span class="map-dot local"></span>
+
+                        <div>
+                            <strong>
+                                YOUR LOCATION
+                            </strong>
+
+                            <small id="userLocationStatus">
+                                Requesting location...
+                            </small>
+                        </div>
+
+                    </div>
 
 
-    <script src="app.js"></script>
+                    <div class="map-overlay-item">
+
+                        <span class="map-dot destination"></span>
+
+                        <div>
+                            <strong>
+                                DESTINATION
+                            </strong>
+
+                            <small id="mapLocation">
+                                —
+                            </small>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="location-details">
+
+                <div class="location-coordinate">
+
+                    <span>
+                        DESTINATION LATITUDE
+                    </span>
+
+                    <strong id="mapLatitude">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="location-coordinate">
+
+                    <span>
+                        DESTINATION LONGITUDE
+                    </span>
+
+                    <strong id="mapLongitude">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="location-coordinate">
+
+                    <span>
+                        TIMEZONE
+                    </span>
+
+                    <strong id="mapTimezone">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="location-note">
+
+                    <span>
+                        GEOGRAPHIC VISUALIZATION
+                    </span>
+
+                    <p>
+                        The map shows the approximate geographic
+                        location associated with the destination IP.
+                        The line is not an actual traceroute.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== HTTP ==================== -->
+
+    <section
+        id="httpPanel"
+        class="http-panel hidden"
+    >
+
+        <div class="http-left">
+
+            <p class="section-label">
+                HTTP MEASUREMENT
+            </p>
+
+            <h2>
+                Destination Response
+            </h2>
+
+            <p id="httpMessage">
+                Measuring response time...
+            </p>
+
+        </div>
+
+
+        <div class="http-value">
+
+            <strong id="httpLatency">
+                —
+            </strong>
+
+            <span>
+                ms
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== STATISTICS ==================== -->
+
+    <section class="dashboard">
+
+        <div class="stat-card">
+
+            <span>
+                PACKETS
+            </span>
+
+            <strong id="packetCount">
+                0 / 32
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                HOPS
+            </span>
+
+            <strong id="hopCount">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                HTTP
+            </span>
+
+            <strong id="latency">
+                — ms
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                PROTOCOL
+            </span>
+
+            <strong>
+                TCP/IP
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== PACKET INSPECTOR ==================== -->
+
+    <section class="details">
+
+        <div class="details-header">
+
+            <p class="section-label">
+                PACKET INSPECTOR
+            </p>
+
+            <span id="packetStatus">
+                WAITING
+            </span>
+
+        </div>
+
+
+        <div class="details-grid">
+
+            <div>
+                <span>SOURCE</span>
+                <strong>LOCAL HOST</strong>
+            </div>
+
+            <div>
+                <span>DESTINATION</span>
+                <strong id="detailDestination">
+                    google.com
+                </strong>
+            </div>
+
+            <div>
+                <span>TTL</span>
+                <strong id="ttl">
+                    64
+                </strong>
+            </div>
+
+            <div>
+                <span>PACKET ID</span>
+                <strong id="packetId">
+                    —
+                </strong>
+            </div>
+
+            <div>
+                <span>TRACE START</span>
+                <strong id="traceTimestamp">
+                    —
+                </strong>
+            </div>
+
+            <div>
+                <span>DATA SOURCE</span>
+                <strong>
+                    LIVE LOOKUPS
+                </strong>
+            </div>
+
+            <div>
+                <span>VISUAL ROUTE</span>
+                <strong>
+                    CONCEPTUAL
+                </strong>
+            </div>
+
+            <div>
+                <span>VERSION</span>
+                <strong>
+                    2.3.0
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== EXPLANATION ==================== -->
+
+    <section class="explanation">
+
+        <div class="explanation-heading">
+
+            <p class="section-label">
+                ABOUT THE PROJECT
+            </p>
+
+            <h2>
+                What is Packet Journey?
+            </h2>
+
+        </div>
+
+
+        <div class="explanation-content">
+
+            <div class="explanation-main">
+
+                <p>
+                    When you connect to a website, your request doesn't
+                    simply travel directly from your computer to a server.
+                    It passes through multiple systems that help move
+                    information across the internet.
+                </p>
+
+                <p>
+                    Packet Journey visualizes that process. Enter a
+                    destination and the application resolves its domain,
+                    identifies the destination's network information,
+                    locates the destination geographically, measures
+                    browser HTTP response time, and visualizes a
+                    conceptual route a packet could take.
+                </p>
+
+            </div>
+
+
+            <div class="explanation-points">
+
+                <div>
+
+                    <span>01</span>
+
+                    <strong>
+                        DNS
+                    </strong>
+
+                    <p>
+                        Converts a domain name into an IP address.
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    <span>02</span>
+
+                    <strong>
+                        ROUTING
+                    </strong>
+
+                    <p>
+                        Networks forward packets toward their destination.
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    <span>03</span>
+
+                    <strong>
+                        GEOLOCATION
+                    </strong>
+
+                    <p>
+                        Maps an IP address to an approximate
+                        geographic destination.
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    <span>04</span>
+
+                    <strong>
+                        RESPONSE
+                    </strong>
+
+                    <p>
+                        The destination receives the request and responds.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="technical-note">
+
+            <span>
+                TECHNICAL NOTE
+            </span>
+
+            <p>
+                DNS resolution, IP intelligence, geographic coordinates,
+                and HTTP measurements use live data. The geographic line
+                represents the approximate relationship between locations,
+                not the actual hop-by-hop route taken by network packets.
+                Actual traceroute data is planned for a future backend release.
+            </p>
+
+        </div>
+
+
+        <div class="project-actions">
+
+            <a
+                class="project-button primary"
+                href="https://github.com/asmirrr/packet-journey"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                SEE HOW IT WORKS
+                <span>↗</span>
+            </a>
+
+            <a
+                class="project-button secondary"
+                href="https://asmirrr.github.io/packet-journey/"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                LIVE DEMO
+                <span>↗</span>
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <div class="footer-brand">
+
+        <span>
+            PACKET // JOURNEY
+        </span>
+
+        <span class="footer-version">
+            v2.3.0
+        </span>
+
+    </div>
+
+
+    <div class="footer-info">
+
+        <span>
+            Network visualization experiment
+        </span>
+
+        <span>
+            IP data powered by
+            <a
+                href="https://ipapi.co/"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                ipapi
+            </a>
+        </span>
+
+        <span>
+            Maps by
+            <a
+                href="https://www.openstreetmap.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                OpenStreetMap
+            </a>
+        </span>
+
+    </div>
+
+</footer>
+
+
+<!-- Leaflet -->
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+></script>
+
+<script src="app.js"></script>
 
 </body>
 </html>

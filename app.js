@@ -1,3 +1,24 @@
+/* ============================================================
+   PACKET JOURNEY
+   Version 2.3.0
+   ============================================================ */
+
+
+/* ==================== CONFIG ==================== */
+
+const VERSION = "2.3.0";
+
+const DNS_ENDPOINT =
+    "https://dns.google/resolve";
+
+const IP_API_BASE =
+    "https://ipapi.co/";
+
+const MAP_DEFAULT_ZOOM = 2;
+
+
+/* ==================== ELEMENTS ==================== */
+
 const traceButton =
     document.getElementById("traceButton");
 
@@ -77,7 +98,7 @@ const resolvedIp =
     document.getElementById("resolvedIp");
 
 
-/* ==================== IP INTELLIGENCE ==================== */
+/* ==================== INTELLIGENCE ==================== */
 
 const intelligencePanel =
     document.getElementById("intelligencePanel");
@@ -107,10 +128,13 @@ const intelCoordinates =
     document.getElementById("intelCoordinates");
 
 
-/* ==================== LOCATION ==================== */
+/* ==================== MAP ==================== */
 
 const locationPanel =
     document.getElementById("locationPanel");
+
+const packetMapElement =
+    document.getElementById("packetMap");
 
 const mapLocation =
     document.getElementById("mapLocation");
@@ -124,8 +148,8 @@ const mapLongitude =
 const mapTimezone =
     document.getElementById("mapTimezone");
 
-const mapMarker =
-    document.getElementById("mapMarker");
+const userLocationStatus =
+    document.getElementById("userLocationStatus");
 
 
 /* ==================== HTTP ==================== */
@@ -149,23 +173,63 @@ const packets =
     document.querySelectorAll(".packet");
 
 
+/* ==================== MAP STATE ==================== */
+
+let map = null;
+
+let destinationMarker = null;
+
+let userMarker = null;
+
+let routeLine = null;
+
+let userCoordinates = null;
+
+let destinationCoordinates = null;
+
+
 /* ==================== HELPERS ==================== */
 
 function sleep(ms) {
 
-    return new Promise(resolve => {
-        setTimeout(resolve, ms);
-    });
+    return new Promise(
+        resolve => setTimeout(resolve, ms)
+    );
 
 }
 
 
 function normalizeDestination(value) {
 
-    return value
-        .trim()
-        .replace(/^https?:\/\//i, "")
-        .replace(/\/.*$/, "");
+    let destination =
+        value.trim();
+
+    destination =
+        destination
+            .replace(/^https?:\/\//, "")
+            .replace(/^www\./, "")
+            .split("/")[0]
+            .split("?")[0]
+            .split("#")[0]
+            .trim();
+
+    return destination;
+
+}
+
+
+function formatLocation(data) {
+
+    const city =
+        data.city || "Unknown";
+
+    const country =
+        data.country_code ||
+        data.country_name ||
+        "Unknown";
+
+    return `${city}, ${country}`;
+
 }
 
 
@@ -174,23 +238,21 @@ function normalizeDestination(value) {
 async function resolveDomain(domain) {
 
     const url =
-        `https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=A`;
+        `${DNS_ENDPOINT}?name=${encodeURIComponent(domain)}&type=A`;
 
     const response =
         await fetch(url);
-
 
     if (!response.ok) {
 
         throw new Error(
             "DNS request failed"
         );
-    }
 
+    }
 
     const data =
         await response.json();
-
 
     if (
         data.Status !== 0 ||
@@ -200,24 +262,24 @@ async function resolveDomain(domain) {
         throw new Error(
             "Domain not found"
         );
-    }
 
+    }
 
     const ipv4Record =
         data.Answer.find(
             record => record.type === 1
         );
 
-
     if (!ipv4Record) {
 
         throw new Error(
             "No IPv4 address found"
         );
+
     }
 
-
     return ipv4Record.data;
+
 }
 
 
@@ -226,24 +288,21 @@ async function resolveDomain(domain) {
 async function getIpIntelligence(ip) {
 
     const url =
-        `https://ipapi.co/${encodeURIComponent(ip)}/json/`;
-
+        `${IP_API_BASE}${encodeURIComponent(ip)}/json/`;
 
     const response =
         await fetch(url);
-
 
     if (!response.ok) {
 
         throw new Error(
             "IP intelligence request failed"
         );
-    }
 
+    }
 
     const data =
         await response.json();
-
 
     if (data.error) {
 
@@ -251,10 +310,11 @@ async function getIpIntelligence(ip) {
             data.reason ||
             "IP lookup failed"
         );
+
     }
 
-
     return data;
+
 }
 
 
@@ -265,10 +325,8 @@ async function measureHttpLatency(domain) {
     const url =
         `https://${domain}/`;
 
-
     const start =
         performance.now();
-
 
     try {
 
@@ -281,10 +339,8 @@ async function measureHttpLatency(domain) {
             }
         );
 
-
         const end =
             performance.now();
-
 
         return Math.round(
             end - start
@@ -293,7 +349,9 @@ async function measureHttpLatency(domain) {
     } catch (error) {
 
         return null;
+
     }
+
 }
 
 
@@ -305,30 +363,25 @@ function showQuickResult(domain) {
         "hidden"
     );
 
-
     quickDestination.textContent =
         domain;
-
 
     setQuickStatus(
         "RESOLVING"
     );
 
-
     quickIp.textContent =
         "Resolving...";
-
 
     quickLocation.textContent =
         "Resolving...";
 
-
     quickOrg.textContent =
         "Resolving...";
 
-
     quickLatency.textContent =
         "Measuring...";
+
 }
 
 
@@ -336,28 +389,19 @@ function updateQuickIp(ip) {
 
     quickIp.textContent =
         ip;
+
 }
 
 
 function updateQuickIntelligence(data) {
 
-    const city =
-        data.city || "Unknown";
-
-
-    const country =
-        data.country_code ||
-        data.country_name ||
-        "Unknown";
-
-
     quickLocation.textContent =
-        `${city}, ${country}`;
-
+        formatLocation(data);
 
     quickOrg.textContent =
         data.org ||
         "Unknown";
+
 }
 
 
@@ -369,11 +413,12 @@ function updateQuickLatency(value) {
             "Unavailable";
 
         return;
-    }
 
+    }
 
     quickLatency.textContent =
         `${value} ms`;
+
 }
 
 
@@ -385,9 +430,9 @@ function setQuickStatus(
     quickStatus.textContent =
         text;
 
-
     quickStatus.className =
         `quick-status ${type}`;
+
 }
 
 
@@ -403,21 +448,18 @@ function showDnsSuccess(
         "error"
     );
 
-
     dnsTitle.textContent =
         "Domain resolved";
-
 
     dnsMessage.textContent =
         `${domain} successfully resolved through DNS.`;
 
-
     resolvedIp.textContent =
         ip;
 
-
     targetIp.textContent =
         ip;
+
 }
 
 
@@ -431,21 +473,18 @@ function showDnsError(domain) {
         "error"
     );
 
-
     dnsTitle.textContent =
         "Domain not found";
-
 
     dnsMessage.textContent =
         `No DNS record could be found for ${domain}.`;
 
-
     resolvedIp.textContent =
         "NXDOMAIN";
 
-
     targetIp.textContent =
         "Unresolved";
+
 }
 
 
@@ -457,34 +496,30 @@ function showIpIntelligence(data) {
         "hidden"
     );
 
-
     intelIp.textContent =
-        data.ip || "—";
-
+        data.ip ||
+        "—";
 
     intelOrg.textContent =
-        data.org || "Unknown";
-
+        data.org ||
+        "Unknown";
 
     intelAsn.textContent =
-        data.asn || "Unknown";
-
+        data.asn ||
+        "Unknown";
 
     intelCountry.textContent =
         data.country_name ||
         data.country_code ||
         "Unknown";
 
-
     intelCity.textContent =
         data.city ||
         "Unknown";
 
-
     intelRegion.textContent =
         data.region ||
         "Unknown";
-
 
     intelTimezone.textContent =
         data.timezone ||
@@ -503,6 +538,7 @@ function showIpIntelligence(data) {
 
         intelCoordinates.textContent =
             "Unavailable";
+
     }
 
 
@@ -514,6 +550,7 @@ function showIpIntelligence(data) {
     showLocation(
         data
     );
+
 }
 
 
@@ -522,7 +559,6 @@ function showIpIntelligenceError() {
     intelligencePanel.classList.remove(
         "hidden"
     );
-
 
     intelIp.textContent =
         "Unavailable";
@@ -548,16 +584,224 @@ function showIpIntelligenceError() {
     intelCoordinates.textContent =
         "Unavailable";
 
-
     quickLocation.textContent =
         "Unavailable";
 
     quickOrg.textContent =
         "Unavailable";
+
 }
 
 
-/* ==================== LOCATION ==================== */
+/* ==================== MAP INITIALIZATION ==================== */
+
+function initializeMap() {
+
+    if (map) {
+
+        return;
+
+    }
+
+
+    map =
+        L.map(
+            packetMapElement,
+            {
+                zoomControl: true,
+                worldCopyJump: true
+            }
+        );
+
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom: 19,
+            attribution:
+                '&copy; OpenStreetMap contributors'
+        }
+    ).addTo(map);
+
+
+    map.setView(
+        [20, 0],
+        MAP_DEFAULT_ZOOM
+    );
+
+}
+
+
+/* ==================== MAP MARKERS ==================== */
+
+function createDestinationIcon() {
+
+    return L.divIcon(
+        {
+            className:
+                "destination-map-icon",
+
+            html:
+                `<div style="
+                    width:14px;
+                    height:14px;
+                    border-radius:50%;
+                    background:#ffffff;
+                    border:2px solid #08090c;
+                    box-shadow:0 0 0 5px rgba(255,255,255,0.15), 0 0 18px rgba(255,255,255,0.8);
+                "></div>`,
+
+            iconSize: [14, 14],
+
+            iconAnchor: [7, 7]
+        }
+    );
+
+}
+
+
+function createUserIcon() {
+
+    return L.divIcon(
+        {
+            className:
+                "user-map-icon",
+
+            html:
+                `<div style="
+                    width:13px;
+                    height:13px;
+                    border-radius:50%;
+                    background:#65ff9a;
+                    border:2px solid #08090c;
+                    box-shadow:0 0 0 5px rgba(101,255,154,0.15), 0 0 18px rgba(101,255,154,0.8);
+                "></div>`,
+
+            iconSize: [13, 13],
+
+            iconAnchor: [6.5, 6.5]
+        }
+    );
+
+}
+
+
+/* ==================== USER LOCATION ==================== */
+
+function requestUserLocation() {
+
+    if (
+        !navigator.geolocation
+    ) {
+
+        userLocationStatus.textContent =
+            "Geolocation unavailable";
+
+        return;
+
+    }
+
+
+    userLocationStatus.textContent =
+        "Requesting permission...";
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        position => {
+
+            userCoordinates = [
+                position.coords.latitude,
+                position.coords.longitude
+            ];
+
+
+            userLocationStatus.textContent =
+                "Location detected";
+
+
+            if (!map) {
+
+                initializeMap();
+
+            }
+
+
+            if (userMarker) {
+
+                userMarker.remove();
+
+            }
+
+
+            userMarker =
+                L.marker(
+                    userCoordinates,
+                    {
+                        icon:
+                            createUserIcon()
+                    }
+                )
+                .addTo(map)
+                .bindPopup(
+                    "<strong>Your approximate location</strong>"
+                );
+
+
+            updateMapView();
+
+        },
+
+
+        error => {
+
+            if (
+                error.code ===
+                error.PERMISSION_DENIED
+            ) {
+
+                userLocationStatus.textContent =
+                    "Permission denied";
+
+            } else if (
+                error.code ===
+                error.POSITION_UNAVAILABLE
+            ) {
+
+                userLocationStatus.textContent =
+                    "Location unavailable";
+
+            } else if (
+                error.code ===
+                error.TIMEOUT
+            ) {
+
+                userLocationStatus.textContent =
+                    "Location timed out";
+
+            } else {
+
+                userLocationStatus.textContent =
+                    "Location unavailable";
+
+            }
+
+        },
+
+        {
+            enableHighAccuracy: false,
+
+            timeout: 8000,
+
+            maximumAge: 300000
+        }
+
+    );
+
+}
+
+
+/* ==================== DESTINATION MAP ==================== */
 
 function showLocation(data) {
 
@@ -567,12 +811,8 @@ function showLocation(data) {
     ) {
 
         return;
+
     }
-
-
-    locationPanel.classList.remove(
-        "hidden"
-    );
 
 
     const latitude =
@@ -582,63 +822,163 @@ function showLocation(data) {
         Number(data.longitude);
 
 
+    if (
+        Number.isNaN(latitude) ||
+        Number.isNaN(longitude)
+    ) {
+
+        return;
+
+    }
+
+
+    destinationCoordinates = [
+        latitude,
+        longitude
+    ];
+
+
+    locationPanel.classList.remove(
+        "hidden"
+    );
+
+
     mapLocation.textContent =
-        [
-            data.city,
-            data.country_code
-        ]
-        .filter(Boolean)
-        .join(", ") ||
-        "Unknown";
+        formatLocation(data);
 
 
     mapLatitude.textContent =
         latitude.toFixed(4);
 
-
     mapLongitude.textContent =
         longitude.toFixed(4);
-
 
     mapTimezone.textContent =
         data.timezone ||
         "Unknown";
 
 
-    /*
-     * This is a stylized world-space projection.
-     *
-     * It is NOT intended to be a geographic map.
-     *
-     * Longitude:
-     * -180 -> 0%
-     * +180 -> 100%
-     *
-     * Latitude:
-     * +90 -> 0%
-     * -90 -> 100%
-     */
-
-    const x =
-        ((longitude + 180) / 360) * 100;
+    initializeMap();
 
 
-    const y =
-        ((90 - latitude) / 180) * 100;
+    if (destinationMarker) {
+
+        destinationMarker.remove();
+
+    }
 
 
-    mapMarker.style.left =
-        `${Math.min(
-            96,
-            Math.max(4, x)
-        )}%`;
+    destinationMarker =
+        L.marker(
+            destinationCoordinates,
+            {
+                icon:
+                    createDestinationIcon()
+            }
+        )
+        .addTo(map)
+        .bindPopup(
+            `<strong>${escapeHtml(
+                formatLocation(data)
+            )}</strong><br>${escapeHtml(
+                data.ip || ""
+            )}`
+        );
 
 
-    mapMarker.style.top =
-        `${Math.min(
-            92,
-            Math.max(8, y)
-        )}%`;
+    updateMapView();
+
+}
+
+
+/* ==================== MAP VIEW ==================== */
+
+function updateMapView() {
+
+    if (!map) {
+
+        return;
+
+    }
+
+
+    if (
+        userCoordinates &&
+        destinationCoordinates
+    ) {
+
+        if (routeLine) {
+
+            routeLine.remove();
+
+        }
+
+
+        routeLine =
+            L.polyline(
+                [
+                    userCoordinates,
+                    destinationCoordinates
+                ],
+                {
+                    color: "#65ff9a",
+
+                    weight: 2,
+
+                    opacity: 0.7,
+
+                    dashArray: "7 8"
+                }
+            ).addTo(map);
+
+
+        const bounds =
+            L.latLngBounds(
+                [
+                    userCoordinates,
+                    destinationCoordinates
+                ]
+            );
+
+
+        map.fitBounds(
+            bounds,
+            {
+                padding: [70, 70],
+
+                maxZoom: 7
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    if (destinationCoordinates) {
+
+        map.setView(
+            destinationCoordinates,
+            5
+        );
+
+    }
+
+}
+
+
+/* ==================== HTML SAFETY ==================== */
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
 }
 
 
@@ -656,35 +996,31 @@ function showHttpResult(result) {
         httpLatency.textContent =
             "—";
 
-
         httpMessage.textContent =
             "The destination could not be measured from the browser.";
-
 
         updateQuickLatency(
             null
         );
 
-
         return;
+
     }
 
 
     httpLatency.textContent =
         result;
 
-
     httpMessage.textContent =
         "Measured browser HTTP request time to the destination.";
-
 
     latency.textContent =
         `${result} ms`;
 
-
     updateQuickLatency(
         result
     );
+
 }
 
 
@@ -692,48 +1028,46 @@ function showHttpResult(result) {
 
 function resetNetwork() {
 
-    nodes.forEach(node => {
+    nodes.forEach(
+        node => {
 
-        node.classList.remove(
-            "active",
-            "complete"
-        );
+            node.classList.remove(
+                "active",
+                "complete"
+            );
 
-    });
+        }
+    );
 
 
-    packets.forEach(packet => {
+    packets.forEach(
+        packet => {
 
-        packet.classList.remove(
-            "moving"
-        );
+            packet.classList.remove(
+                "moving"
+            );
 
-    });
+        }
+    );
 
 
     packetCount.textContent =
         "0 / 32";
 
-
     hopCount.textContent =
         "0";
-
 
     latency.textContent =
         "— ms";
 
-
     ttl.textContent =
         "64";
-
 
     packetId.textContent =
         "—";
 
-
     packetStatus.textContent =
         "WAITING";
-
 
     traceTimestamp.textContent =
         "—";
@@ -743,20 +1077,39 @@ function resetNetwork() {
         "hidden"
     );
 
-
     intelligencePanel.classList.add(
         "hidden"
     );
-
 
     locationPanel.classList.add(
         "hidden"
     );
 
-
     httpPanel.classList.add(
         "hidden"
     );
+
+
+    if (routeLine) {
+
+        routeLine.remove();
+
+        routeLine = null;
+
+    }
+
+
+    if (destinationMarker) {
+
+        destinationMarker.remove();
+
+        destinationMarker = null;
+
+    }
+
+
+    destinationCoordinates = null;
+
 }
 
 
@@ -766,7 +1119,6 @@ async function animatePacketRoute() {
 
     connectionStatus.textContent =
         "TRACING";
-
 
     packetStatus.textContent =
         "VISUALIZING ROUTE";
@@ -828,6 +1180,7 @@ async function animatePacketRoute() {
             packet.classList.remove(
                 "moving"
             );
+
         }
 
 
@@ -837,20 +1190,18 @@ async function animatePacketRoute() {
 
 
         await sleep(250);
+
     }
 
 
     packetCount.textContent =
         "32 / 32";
 
-
     hopCount.textContent =
         nodes.length - 1;
 
-
     packetStatus.textContent =
         "VISUALIZATION COMPLETE";
-
 
     connectionStatus.textContent =
         "TRACE COMPLETE";
@@ -860,6 +1211,7 @@ async function animatePacketRoute() {
         "COMPLETE",
         "success"
     );
+
 }
 
 
@@ -878,6 +1230,7 @@ async function tracePacket() {
         destinationInput.focus();
 
         return;
+
     }
 
 
@@ -899,10 +1252,8 @@ async function tracePacket() {
     targetName.textContent =
         destination;
 
-
     detailDestination.textContent =
         destination;
-
 
     targetIp.textContent =
         "Resolving...";
@@ -916,15 +1267,14 @@ async function tracePacket() {
     connectionStatus.textContent =
         "RESOLVING";
 
-
     packetStatus.textContent =
         "DNS LOOKUP";
 
 
     /*
-     * ============================
+     * ============================================
      * STEP 1 — REAL DNS
-     * ============================
+     * ============================================
      */
 
     let ip;
@@ -952,7 +1302,6 @@ async function tracePacket() {
         connectionStatus.textContent =
             "DNS RESOLVED";
 
-
     } catch (error) {
 
         showDnsError(
@@ -969,14 +1318,11 @@ async function tracePacket() {
         quickIp.textContent =
             "Unresolved";
 
-
         quickLocation.textContent =
             "—";
 
-
         quickOrg.textContent =
             "—";
-
 
         quickLatency.textContent =
             "—";
@@ -984,7 +1330,6 @@ async function tracePacket() {
 
         connectionStatus.textContent =
             "DNS FAILED";
-
 
         packetStatus.textContent =
             "DOMAIN NOT FOUND";
@@ -995,13 +1340,14 @@ async function tracePacket() {
 
 
         return;
+
     }
 
 
     /*
-     * ============================
+     * ============================================
      * STEP 2 — IP INTELLIGENCE
-     * ============================
+     * ============================================
      */
 
     packetStatus.textContent =
@@ -1028,9 +1374,18 @@ async function tracePacket() {
 
 
     /*
-     * ============================
-     * STEP 3 — HTTP
-     * ============================
+     * ============================================
+     * STEP 3 — USER LOCATION
+     * ============================================
+     */
+
+    requestUserLocation();
+
+
+    /*
+     * ============================================
+     * STEP 4 — HTTP
+     * ============================================
      */
 
     packetStatus.textContent =
@@ -1062,9 +1417,9 @@ async function tracePacket() {
 
 
     /*
-     * ============================
-     * STEP 4 — VISUALIZATION
-     * ============================
+     * ============================================
+     * STEP 5 — VISUALIZATION
+     * ============================================
      */
 
     await animatePacketRoute();
@@ -1072,6 +1427,7 @@ async function tracePacket() {
 
     traceButton.disabled =
         false;
+
 }
 
 
@@ -1087,11 +1443,20 @@ destinationInput.addEventListener(
     "keydown",
     event => {
 
-        if (event.key === "Enter") {
+        if (
+            event.key === "Enter"
+        ) {
 
             tracePacket();
 
         }
 
     }
+);
+
+
+/* ==================== INITIALIZATION ==================== */
+
+console.log(
+    `Packet Journey v${VERSION} initialized.`
 );
