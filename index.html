@@ -26,7 +26,7 @@
 
     <main>
 
-        <!-- Hero / Input -->
+        <!-- Hero -->
         <section class="hero">
 
             <p class="eyebrow">NETWORK VISUALIZATION</p>
@@ -63,6 +63,7 @@
         <section class="network">
 
             <div class="network-header">
+
                 <div>
                     <p class="section-label">LIVE TRACE</p>
                     <h2>Packet Route</h2>
@@ -71,12 +72,13 @@
                 <div id="connectionStatus" class="connection-status">
                     READY
                 </div>
+
             </div>
 
 
             <div class="network-map">
 
-                <!-- Node 1 -->
+                <!-- Device -->
                 <div class="network-node" data-node="device">
 
                     <div class="node-icon">
@@ -97,7 +99,7 @@
                 </div>
 
 
-                <!-- Node 2 -->
+                <!-- Router -->
                 <div class="network-node" data-node="router">
 
                     <div class="node-icon">
@@ -118,7 +120,7 @@
                 </div>
 
 
-                <!-- Node 3 -->
+                <!-- ISP -->
                 <div class="network-node" data-node="isp">
 
                     <div class="node-icon">
@@ -139,7 +141,7 @@
                 </div>
 
 
-                <!-- Node 4 -->
+                <!-- DNS -->
                 <div class="network-node" data-node="dns">
 
                     <div class="node-icon">
@@ -160,7 +162,7 @@
                 </div>
 
 
-                <!-- Node 5 -->
+                <!-- Internet -->
                 <div class="network-node" data-node="internet">
 
                     <div class="node-icon">
@@ -181,7 +183,7 @@
                 </div>
 
 
-                <!-- Node 6 -->
+                <!-- Target -->
                 <div class="network-node target" data-node="target">
 
                     <div class="node-icon">
@@ -191,10 +193,46 @@
                     <div class="node-info">
                         <span class="node-type">TARGET</span>
                         <strong id="targetName">google.com</strong>
-                        <small>Destination</small>
+                        <small id="targetIp">Destination</small>
                     </div>
 
                 </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- DNS Result -->
+        <section id="dnsResult" class="dns-result hidden">
+
+            <div class="dns-icon">
+                ✓
+            </div>
+
+            <div>
+
+                <span class="section-label">
+                    DNS RESOLUTION
+                </span>
+
+                <h3 id="dnsTitle">
+                    Domain resolved
+                </h3>
+
+                <p id="dnsMessage">
+                    Destination successfully resolved.
+                </p>
+
+            </div>
+
+            <div class="dns-ip">
+
+                <span>IP ADDRESS</span>
+
+                <strong id="resolvedIp">
+                    —
+                </strong>
 
             </div>
 
@@ -231,9 +269,17 @@
         <section class="details">
 
             <div class="details-header">
-                <p class="section-label">PACKET INSPECTOR</p>
-                <span id="packetStatus">WAITING</span>
+
+                <p class="section-label">
+                    PACKET INSPECTOR
+                </p>
+
+                <span id="packetStatus">
+                    WAITING
+                </span>
+
             </div>
+
 
             <div class="details-grid">
 
@@ -244,6 +290,7 @@
 
                 <div>
                     <span>DESTINATION</span>
+
                     <strong id="detailDestination">
                         google.com
                     </strong>
@@ -267,8 +314,15 @@
 
 
     <footer>
-        PACKET // JOURNEY
-        <span>Network visualization experiment</span>
+
+        <span>
+            PACKET // JOURNEY
+        </span>
+
+        <span>
+            Network visualization experiment
+        </span>
+
     </footer>
 
 

@@ -1,22 +1,31 @@
 # Packet Journey
 
-A visual network tracing simulator that demonstrates how a packet travels across a network from a local device to a remote destination.
+An interactive network visualization that demonstrates the conceptual journey of a packet from a local device to a remote destination.
+
+## Live Demo
+
+Coming soon.
 
 ## Overview
 
-Packet Journey visualizes the conceptual path of a network packet:
+Packet Journey visualizes the path a network packet can take when communicating with a remote server.
+
+The current visualization follows the conceptual route:
 
 Your Device → Router → ISP → DNS → Internet → Target
 
-The project uses animation and simulated network data to make otherwise abstract networking concepts easier to understand.
+Version 1.5 introduces real DNS resolution using DNS-over-HTTPS.
 
 ## Features
 
+- Real DNS resolution
+- Real IPv4 address detection
+- Domain validation
+- DNS failure handling
 - Animated packet transmission
 - Network hop visualization
-- Simulated latency measurements
 - Packet inspector
-- TTL tracking
+- TTL visualization
 - Packet IDs
 - Destination input
 - Responsive interface
@@ -27,32 +36,67 @@ The project uses animation and simulated network data to make otherwise abstract
 - HTML
 - CSS
 - JavaScript
+- Fetch API
+- DNS-over-HTTPS
+
+## How DNS Resolution Works
+
+When a user enters a domain such as:
+
+    google.com
+
+Packet Journey sends a DNS query to Google's public DNS-over-HTTPS resolver.
+
+The resolver returns DNS information, including an IPv4 address when available.
+
+For example:
+
+    google.com
+        ↓
+    DNS lookup
+        ↓
+    IPv4 address
+        ↓
+    Packet Journey visualization
+
+If the domain cannot be resolved, the visualization stops and displays the DNS failure.
 
 ## Networking Concepts
 
 This project demonstrates concepts including:
 
+- DNS
 - IP addressing
 - Network hops
 - Routers
-- DNS resolution
 - Packet forwarding
 - TTL (Time To Live)
 - TCP/IP
 - Network latency
 
-## Important Note
+## Important Technical Note
 
-The network measurements and routing path are simulated for visualization purposes. They do not represent a real traceroute.
+DNS resolution is real.
 
-## Future Improvements
+The network route and latency values displayed in the current visualization are simulated and are not measurements of the actual network path to the destination.
 
-- Real traceroute integration
-- Real DNS resolution
-- Geographic packet visualization
-- Interactive packet inspection
-- IPv4 / IPv6 support
-- Real-time latency measurements
+Future versions will replace simulated measurements with real network data where technically possible.
+
+## Roadmap
+
+### Version 1.0
+
+- [x] Interactive network visualization
+- [x] Animated packet
+- [x] Packet inspector
+- [x] Responsive interface
+
+### Version 1.5
+
+- [x] Real DNS resolution
+- [x] Real IPv4 address detection
+- [x] Invalid domain handling
+- [x] DNS status display
 
 ## Author
 
