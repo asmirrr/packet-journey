@@ -85,6 +85,17 @@ The visualization is intended to make networking concepts easier to understand r
 
 ## Version History
 
+### v3.0.0
+
+* Rebuilt the geographic destination view around an interactive Leaflet map
+* Replaced the fragmented CSS-generated map treatment with real map tiles
+* Added an approximate origin-to-destination geographic route
+* Added animated packet movement across the geographic route
+* Added interactive map zoom and pan
+* Added clearer map status and route labeling
+* Added explicit approximate-route language to distinguish visualization from traceroute data
+* Updated OpenStreetMap tile integration and attribution
+
 ### v2.3.1
 
 * Restored the v2.2 visual style for the Live Trace / packet route
@@ -162,8 +173,12 @@ Packet Journey is intentionally being developed in small versions so that each u
 
 ### Future
 
-* [ ] Interactive world map
-* [ ] Visualize approximate destination location
+* [ ] Actual traceroute / hop visualization
+* [ ] More detailed route intelligence
+* [ ] Historical latency measurements
+
+* [x] Interactive world map
+* [x] Visualize approximate destination location
 * [ ] More detailed route information
 * [ ] Traceroute-style visualization
 * [ ] Multiple destination comparisons

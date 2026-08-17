@@ -1,12 +1,12 @@
 /* ============================================================
    PACKET JOURNEY
-   Version 2.3.1
+   Version 3.0.0
    ============================================================ */
 
 
 /* ==================== CONFIG ==================== */
 
-const VERSION = "2.3.1";
+const VERSION = "3.0.0";
 
 const DNS_ENDPOINT =
     "https://dns.google/resolve";
@@ -15,6 +15,7 @@ const IP_API_BASE =
     "https://ipapi.co/";
 
 const MAP_DEFAULT_ZOOM = 2;
+const MAP_FIT_PADDING = [70, 70];
 
 
 /* ==================== ELEMENTS ==================== */
@@ -151,6 +152,9 @@ const mapTimezone =
 const userLocationStatus =
     document.getElementById("userLocationStatus");
 
+const mapRouteStatus =
+    document.getElementById("mapRouteStatus");
+
 
 /* ==================== HTTP ==================== */
 
@@ -186,6 +190,10 @@ let routeLine = null;
 let userCoordinates = null;
 
 let destinationCoordinates = null;
+
+let mapPacketMarker = null;
+
+let mapAnimationFrame = null;
 
 
 /* ==================== HELPERS ==================== */
@@ -615,7 +623,7 @@ function initializeMap() {
 
 
     L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
         {
             maxZoom: 19,
             attribution:
@@ -786,6 +794,10 @@ function requestUserLocation() {
 
             }
 
+            if (destinationCoordinates) {
+                updateMapView();
+            }
+
         },
 
         {
@@ -891,28 +903,108 @@ function showLocation(data) {
 }
 
 
+/* ==================== MAP PACKET ==================== */
+
+function createMapPacketIcon() {
+
+    return L.divIcon({
+        className: "map-packet-icon",
+        html: "",
+        iconSize: [9, 9],
+        iconAnchor: [4.5, 4.5]
+    });
+
+}
+
+
+function stopMapPacketAnimation() {
+
+    if (mapAnimationFrame) {
+        cancelAnimationFrame(mapAnimationFrame);
+        mapAnimationFrame = null;
+    }
+
+    if (mapPacketMarker) {
+        mapPacketMarker.remove();
+        mapPacketMarker = null;
+    }
+
+}
+
+
+function animateMapPacket() {
+
+    stopMapPacketAnimation();
+
+    if (!map || !userCoordinates || !destinationCoordinates) {
+        return;
+    }
+
+    mapPacketMarker =
+        L.marker(
+            userCoordinates,
+            {
+                icon: createMapPacketIcon(),
+                interactive: false
+            }
+        ).addTo(map);
+
+    const start = userCoordinates;
+    const end = destinationCoordinates;
+    const duration = 2400;
+    const started = performance.now();
+
+    mapRouteStatus.textContent = "PACKET IN TRANSIT";
+
+    function frame(now) {
+
+        const progress = Math.min(
+            (now - started) / duration,
+            1
+        );
+
+        // Smooth acceleration/deceleration without implying a real hop route.
+        const eased = progress < 0.5
+            ? 2 * progress * progress
+            : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+        const latitude =
+            start[0] + (end[0] - start[0]) * eased;
+
+        const longitude =
+            start[1] + (end[1] - start[1]) * eased;
+
+        mapPacketMarker.setLatLng([latitude, longitude]);
+
+        if (progress < 1) {
+            mapAnimationFrame =
+                requestAnimationFrame(frame);
+        } else {
+            mapAnimationFrame = null;
+            mapRouteStatus.textContent = "DESTINATION REACHED";
+        }
+
+    }
+
+    mapAnimationFrame =
+        requestAnimationFrame(frame);
+
+}
+
+
 /* ==================== MAP VIEW ==================== */
 
 function updateMapView() {
 
     if (!map) {
-
         return;
-
     }
 
-
-    if (
-        userCoordinates &&
-        destinationCoordinates
-    ) {
+    if (userCoordinates && destinationCoordinates) {
 
         if (routeLine) {
-
             routeLine.remove();
-
         }
-
 
         routeLine =
             L.polyline(
@@ -922,46 +1014,45 @@ function updateMapView() {
                 ],
                 {
                     color: "#65ff9a",
-
                     weight: 2,
-
-                    opacity: 0.7,
-
-                    dashArray: "7 8"
+                    opacity: 0.75,
+                    dashArray: "7 8",
+                    lineCap: "round"
                 }
             ).addTo(map);
 
-
         const bounds =
-            L.latLngBounds(
-                [
-                    userCoordinates,
-                    destinationCoordinates
-                ]
-            );
-
+            L.latLngBounds([
+                userCoordinates,
+                destinationCoordinates
+            ]);
 
         map.fitBounds(
             bounds,
             {
-                padding: [70, 70],
-
-                maxZoom: 7
+                padding: MAP_FIT_PADDING,
+                maxZoom: 7,
+                animate: true,
+                duration: 0.8
             }
         );
 
-
+        mapRouteStatus.textContent = "ROUTE READY";
+        animateMapPacket();
         return;
 
     }
-
 
     if (destinationCoordinates) {
 
         map.setView(
             destinationCoordinates,
-            5
+            5,
+            { animate: true }
         );
+
+        mapRouteStatus.textContent =
+            "DESTINATION ONLY — LOCATION UNAVAILABLE";
 
     }
 
@@ -1090,12 +1181,18 @@ function resetNetwork() {
     );
 
 
+    stopMapPacketAnimation();
+
     if (routeLine) {
 
         routeLine.remove();
 
         routeLine = null;
 
+    }
+
+    if (mapRouteStatus) {
+        mapRouteStatus.textContent = "WAITING FOR LOCATION";
     }
 
 
